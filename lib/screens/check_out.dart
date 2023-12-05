@@ -39,7 +39,7 @@ class _CheckOutState extends State<CheckOut> {
   String environment =  "UAT_SIM";
   String appId = '';
   //PGTESTPAYUAT
-  String merchantId = 'M1U6N00AIFUD';
+  String merchantId = 'PGTESTPAYUAT';
   bool enableLogging = true;
   String checksum = '';
   String saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
@@ -79,7 +79,6 @@ class _CheckOutState extends State<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
-    print(merchantId + 'IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII');
     return Scaffold(
       backgroundColor: ThemeConfig.xxlightGrey,
       appBar: CommonAppbar.show(

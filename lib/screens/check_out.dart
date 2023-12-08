@@ -11,7 +11,6 @@ import 'package:grostore/custom_ui/Button.dart';
 import 'package:grostore/custom_ui/Image_view.dart';
 import 'package:grostore/custom_ui/common_appbar.dart';
 import 'package:grostore/custom_ui/input_decorations.dart';
-import 'package:grostore/custom_ui/loading.dart';
 import 'package:grostore/custom_ui/shimmers.dart';
 import 'package:grostore/helpers/common_functions.dart';
 import 'package:grostore/helpers/device_info_helper.dart';
@@ -25,7 +24,9 @@ import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
 
 import '../phone_pay_payment.dart';
+
 Object? result;
+
 class CheckOut extends StatefulWidget {
   const CheckOut({Key? key}) : super(key: key);
 
@@ -34,25 +35,24 @@ class CheckOut extends StatefulWidget {
 }
 
 class _CheckOutState extends State<CheckOut> {
-
   // ******** value of the init of flutter sdk
-  String environment =  "UAT_SIM";
+  String environment = "UAT_SIM";
   String appId = '';
   //PGTESTPAYUAT
-  String merchantId = 'PGTESTPAYUAT';
+  String merchantId = 'M1U6N00AIFUD';
   bool enableLogging = true;
   String checksum = '';
-  String saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
+  String saltKey = '35ef1faa-5c7e-43a0-a754-40e91507d2dc';
 
   String saltIndex = '1';
   // https://webhook.site/f63d1195-f001-474d-acaa-f7bc4f3b20b1   this fake
-  String callBackUrl = 'https://webhook.site/f63d1195-f001-474d-acaa-f7bc4f3b20b1';
+  String callBackUrl =
+      'https://dailytest.in/payment.php';
   String body = '';
 
   String apiEndPoint = '/pg/v1/pay';
 
-
-  getCheckSum(){
+  getCheckSum() {
     final requestData = {
       "merchantId": merchantId,
       "merchantTransactionId": "transaction_123",
@@ -60,12 +60,14 @@ class _CheckOutState extends State<CheckOut> {
       "amount": 1000,
       "mobileNumber": "9999999999",
       "callbackUrl": callBackUrl,
-      "paymentInstrument": {"type": "PAY_PAGE",},
+      "paymentInstrument": {
+        "type": "PAY_PAGE",
+      },
     };
     String base64Body = base64.encode(utf8.encode(jsonEncode(requestData)));
-    checksum = '${sha256.convert(utf8.encode(base64Body+apiEndPoint+saltKey)).toString()}###$saltIndex';
+    checksum =
+        '${sha256.convert(utf8.encode(base64Body + apiEndPoint + saltKey)).toString()}###$saltIndex';
     return base64Body;
-
   }
 
   @override
@@ -74,11 +76,12 @@ class _CheckOutState extends State<CheckOut> {
     Provider.of<CheckOutPresenter>(context, listen: false).init(context);
     super.initState();
     phonePayInit();
-   body = getCheckSum().toString();
+    body = getCheckSum().toString();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(body + '/////////////////////////////////////');
     return Scaffold(
       backgroundColor: ThemeConfig.xxlightGrey,
       appBar: CommonAppbar.show(
@@ -103,11 +106,15 @@ class _CheckOutState extends State<CheckOut> {
                 buildLogistic(context, data)
               else
                 Container(
-
-                  margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecorations.shadow(radius: 8).copyWith(color: ThemeConfig.red),
-                    child: Text("We are not shipping to your city now. ",style: StyleConfig.fs14cWhitefwNormal,)),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecorations.shadow(radius: 8)
+                        .copyWith(color: ThemeConfig.red),
+                    child: Text(
+                      "We are not shipping to your city now. ",
+                      style: StyleConfig.fs14cWhitefwNormal,
+                    )),
               SizedBox(
                 height: 24,
               ),
@@ -118,13 +125,13 @@ class _CheckOutState extends State<CheckOut> {
                   style: StyleConfig.fs16fwBold,
                 ),
               ),
-              data.isFetchTimeSlot?
-              buildDeliveryTime(context, data):timeSlotShimmer()
-              ,
+              data.isFetchTimeSlot
+                  ? buildDeliveryTime(context, data)
+                  : timeSlotShimmer(),
               SizedBox(
                 height: 24,
               ),
-              buildPersonalInfo(context,data),
+              buildPersonalInfo(context, data),
               SizedBox(
                 height: 24,
               ),
@@ -142,12 +149,12 @@ class _CheckOutState extends State<CheckOut> {
                 height: 100,
                 decoration: BoxDecorations.shadow(radius: 8),
                 margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
-                child:
-                Button(
-                  onPressed: ()async{
-                    PaymentTypesResponse? type= await showPaymentMethods(data);
-                    if(type!=null){
+                padding:
+                    EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
+                child: Button(
+                  onPressed: () async {
+                    PaymentTypesResponse? type = await showPaymentMethods(data);
+                    if (type != null) {
                       data.onChangePaymentMethod(type);
                     }
                   },
@@ -156,15 +163,25 @@ class _CheckOutState extends State<CheckOut> {
                   child: Row(
                     children: [
                       Container(
-                          width: getWidth(context)*0.38,
-                          child: Text(data.selectedPaymentMethod?.name??'',style: StyleConfig.fs16fwBold,)),
+                          width: getWidth(context) * 0.38,
+                          child: Text(
+                            data.selectedPaymentMethod?.name ?? '',
+                            style: StyleConfig.fs16fwBold,
+                          )),
                       Container(
-                        width: getWidth(context)*0.3,
+                        width: getWidth(context) * 0.3,
                         padding: EdgeInsets.all(8),
-                        child: ImageView.svg(url: data.selectedPaymentMethod?.image??"",height:50,width: 50),
-                      )       ,
+                        child: ImageView.svg(
+                            url: data.selectedPaymentMethod?.image ?? "",
+                            height: 50,
+                            width: 50),
+                      ),
                       Spacer(),
-                      Image.asset(getAssetIcon("next.png"),width: 16,height: 16,),
+                      Image.asset(
+                        getAssetIcon("next.png"),
+                        width: 16,
+                        height: 16,
+                      ),
                     ],
                   ),
                 ),
@@ -176,10 +193,11 @@ class _CheckOutState extends State<CheckOut> {
                 height: 100,
                 decoration: BoxDecorations.shadow(radius: 8),
                 margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
+                padding:
+                    EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
                 child: Button(
                     minWidth: getWidth(context),
-                    onPressed: (){
+                    onPressed: () {
                       // Navigator.pop(context,data.paymentTypes[index]);
                       startPgTransaction();
                     },
@@ -187,19 +205,30 @@ class _CheckOutState extends State<CheckOut> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            width: getWidth(context)*0.3,
-                            child: Text("Phone pe",style: StyleConfig.fs14fwBold,)),
-                        SizedBox(width: 29,),
+                            width: getWidth(context) * 0.3,
+                            child: Text(
+                              "Phone pe",
+                              style: StyleConfig.fs14fwBold,
+                            )),
+                        SizedBox(
+                          width: 29,
+                        ),
                         Container(
-                          width: getWidth(context)*0.3,
+                          width: getWidth(context) * 0.3,
                           padding: EdgeInsets.all(8),
-                          child: Image.asset('assets/phonepay.jpg',width: 100,),
+                          child: Image.asset(
+                            'assets/phonepay.jpg',
+                            width: 100,
+                          ),
                         ),
                         Spacer(),
-                        Image.asset(getAssetIcon("next.png"),width: 16,height: 16,),
+                        Image.asset(
+                          getAssetIcon("next.png"),
+                          width: 16,
+                          height: 16,
+                        ),
                       ],
-                    )
-                ),
+                    )),
               ),
 
               // PhonePayPayment(),
@@ -362,7 +391,7 @@ class _CheckOutState extends State<CheckOut> {
               Button(
                 minWidth: getWidth(context),
                 color: ThemeConfig.accentColor,
-                onPressed: (){
+                onPressed: () {
                   data.placeOrder(context);
                 },
                 padding: EdgeInsets.symmetric(vertical: 20),
@@ -378,10 +407,10 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
-  Widget timeSlotShimmer(){
-
+  Widget timeSlotShimmer() {
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: StyleConfig.padding,vertical: 5),
+      padding:
+          EdgeInsets.symmetric(horizontal: StyleConfig.padding, vertical: 5),
       child: Column(
         children: [
           Container(
@@ -405,7 +434,7 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
-  Column buildPersonalInfo(BuildContext context,CheckOutPresenter data) {
+  Column buildPersonalInfo(BuildContext context, CheckOutPresenter data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -435,7 +464,7 @@ class _CheckOutState extends State<CheckOut> {
                 height: 10,
               ),
               TextField(
-                controller:data.phoneTxt ,
+                controller: data.phoneTxt,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecorations.phone(hint_text: "Phone"),
               ),
@@ -488,7 +517,6 @@ class _CheckOutState extends State<CheckOut> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         SizedBox(
           height: 10,
         ),
@@ -499,41 +527,39 @@ class _CheckOutState extends State<CheckOut> {
             onPressed: () {
               data.onChangeDeliveryType("regular");
             },
-            child:Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    decoration: BoxDecorations.shadow(radius: 8).copyWith(
-                        border: data.shipping_delivery_type == "regular"
-                            ? Border.all(
-                                color: ThemeConfig.accentColor, width: 2)
-                            : null),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.local_shipping_outlined,
-                          size: 54,
-                          color: ThemeConfig.grey,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Regular Delivery",
-                              style: StyleConfig.fs14fwNormal,
-                            ),
-                            Text(
-                              "We will deliver your products soon.",
-                              style: StyleConfig.fs14fwNormal,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                 ,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: BoxDecorations.shadow(radius: 8).copyWith(
+                  border: data.shipping_delivery_type == "regular"
+                      ? Border.all(color: ThemeConfig.accentColor, width: 2)
+                      : null),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.local_shipping_outlined,
+                    size: 54,
+                    color: ThemeConfig.grey,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Regular Delivery",
+                        style: StyleConfig.fs14fwNormal,
+                      ),
+                      Text(
+                        "We will deliver your products soon.",
+                        style: StyleConfig.fs14fwNormal,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         Button(
@@ -615,59 +641,62 @@ class _CheckOutState extends State<CheckOut> {
           //color: Colors.red,
           height: 150,
           width: getWidth(context),
-          child: data.isFetchDeliveryAddress?ListView.separated(
-            itemCount: data.addresses.length,
-            padding: EdgeInsets.symmetric(
-                horizontal: StyleConfig.padding, vertical: 10),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecorations.shadow(radius: 8).copyWith(
-                    border: Border.all(
-                        width: 2,
-                        color:
-                            data.selectedShippingAddress.id == data.addresses[index].id
-                                ? ThemeConfig.accentColor
-                                : ThemeConfig.grey)),
-                child: Button(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  shape: StyleConfig.buttonRadius(8),
-                  minWidth: getWidth(context) * 0.5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.addresses[index].countryName,
-                        style: StyleConfig.fs14fwNormal,
+          child: data.isFetchDeliveryAddress
+              ? ListView.separated(
+                  itemCount: data.addresses.length,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: StyleConfig.padding, vertical: 10),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecorations.shadow(radius: 8).copyWith(
+                          border: Border.all(
+                              width: 2,
+                              color: data.selectedShippingAddress.id ==
+                                      data.addresses[index].id
+                                  ? ThemeConfig.accentColor
+                                  : ThemeConfig.grey)),
+                      child: Button(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        shape: StyleConfig.buttonRadius(8),
+                        minWidth: getWidth(context) * 0.5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data.addresses[index].countryName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].stateName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].cityName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].address,
+                              style: StyleConfig.fs14fwNormal,
+                              maxLines: 1,
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          data.onChangeShippingAddress(data.addresses[index]);
+                        },
                       ),
-                      Text(
-                        data.addresses[index].stateName,
-                        style: StyleConfig.fs14fwNormal,
-                      ),
-                      Text(
-                        data.addresses[index].cityName,
-                        style: StyleConfig.fs14fwNormal,
-                      ),
-                      Text(
-                        data.addresses[index].address,
-                        style: StyleConfig.fs14fwNormal,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    data.onChangeShippingAddress(data.addresses[index]);
+                    );
                   },
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return SizedBox(
-                width: 10,
-              );
-            },
-          ):Shimmers.horizontalList(10,  getWidth(context) * 0.5, 100),
+                  separatorBuilder: (context, index) {
+                    return SizedBox(
+                      width: 10,
+                    );
+                  },
+                )
+              : Shimmers.horizontalList(10, getWidth(context) * 0.5, 100),
         )
       ],
     );
@@ -688,57 +717,61 @@ class _CheckOutState extends State<CheckOut> {
           //color: Colors.red,
           height: 150,
           width: getWidth(context),
-          child: data.isFetchDeliveryAddress?ListView.separated(
-            itemCount: data.addresses.length,
-            padding: EdgeInsets.symmetric(
-                horizontal: StyleConfig.padding, vertical: 10),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecorations.shadow(radius: 8).copyWith(
-                    border: Border.all(
-                        width: 2,
-                        color: data.billingAddressId == data.addresses[index].id
-                            ? ThemeConfig.accentColor
-                            : ThemeConfig.grey)),
-                child: Button(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  shape: StyleConfig.buttonRadius(8),
-                  minWidth: getWidth(context) * 0.5,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        data.addresses[index].countryName,
-                        style: StyleConfig.fs14fwNormal,
+          child: data.isFetchDeliveryAddress
+              ? ListView.separated(
+                  itemCount: data.addresses.length,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: StyleConfig.padding, vertical: 10),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecorations.shadow(radius: 8).copyWith(
+                          border: Border.all(
+                              width: 2,
+                              color: data.billingAddressId ==
+                                      data.addresses[index].id
+                                  ? ThemeConfig.accentColor
+                                  : ThemeConfig.grey)),
+                      child: Button(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        shape: StyleConfig.buttonRadius(8),
+                        minWidth: getWidth(context) * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              data.addresses[index].countryName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].stateName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].cityName,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                            Text(
+                              data.addresses[index].address,
+                              style: StyleConfig.fs14fwNormal,
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          data.onChangeBillingAddress(data.addresses[index].id);
+                        },
                       ),
-                      Text(
-                        data.addresses[index].stateName,
-                        style: StyleConfig.fs14fwNormal,
-                      ),
-                      Text(
-                        data.addresses[index].cityName,
-                        style: StyleConfig.fs14fwNormal,
-                      ),
-                      Text(
-                        data.addresses[index].address,
-                        style: StyleConfig.fs14fwNormal,
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    data.onChangeBillingAddress(data.addresses[index].id);
+                    );
                   },
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return SizedBox(
-                width: 10,
-              );
-            },
-          ):Shimmers.horizontalList(10,  getWidth(context) * 0.5, 100),
+                  separatorBuilder: (context, index) {
+                    return SizedBox(
+                      width: 10,
+                    );
+                  },
+                )
+              : Shimmers.horizontalList(10, getWidth(context) * 0.5, 100),
         ),
       ],
     );
@@ -756,14 +789,15 @@ class _CheckOutState extends State<CheckOut> {
           ),
         ),
         // width: getWidth(context),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         AspectRatio(
           aspectRatio: 1,
           child: ListView.separated(
             itemCount: data.logistics.length,
             padding: EdgeInsets.symmetric(
-                horizontal: StyleConfig.padding,
-                vertical: 10),
+                horizontal: StyleConfig.padding, vertical: 10),
             // scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Container(
@@ -771,9 +805,9 @@ class _CheckOutState extends State<CheckOut> {
                     border: Border.all(
                         width: 2,
                         color:
-                        data.selectedLogistic.id == data.logistics[index].id
-                            ? ThemeConfig.accentColor
-                            : ThemeConfig.grey)),
+                            data.selectedLogistic.id == data.logistics[index].id
+                                ? ThemeConfig.accentColor
+                                : ThemeConfig.grey)),
                 child: Button(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   shape: StyleConfig.buttonRadius(8),
@@ -838,97 +872,106 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
- Future<PaymentTypesResponse?> showPaymentMethods(CheckOutPresenter data)async{
-   return showDialog<PaymentTypesResponse>(context: context, builder: (context){
-      return AlertDialog(
-        titlePadding: EdgeInsets.zero,
-        title: Container(
-          alignment: Alignment.center,
-          color: ThemeConfig.accentColor,
-          padding: EdgeInsets.symmetric(horizontal: 14,vertical: 24),
-          child: Text("Choose Payment Method",style: StyleConfig.fs16cWhitefwBold,),
-        ),
-
-        content:Column(
-          children: List.generate(data.paymentTypes.length, (index) {
-            return Column(
-              children: [
-                Button(
-                  minWidth: getWidth(context),
-                    onPressed: (){
-                      Navigator.pop(context,data.paymentTypes[index]);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                            width: getWidth(context)*0.3,
-                            child: Text(data.paymentTypes[index].name,style: StyleConfig.fs14fwBold,)),
-                        Container(
-                          width: getWidth(context)*0.3,
-                          padding: EdgeInsets.all(8),
-                          child: ImageView.svg(url: data.paymentTypes[index].image,height:50,width: 50),
-                        ),
-                      ],
-                    )
+  Future<PaymentTypesResponse?> showPaymentMethods(
+      CheckOutPresenter data) async {
+    return showDialog<PaymentTypesResponse>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            titlePadding: EdgeInsets.zero,
+            title: Container(
+              alignment: Alignment.center,
+              color: ThemeConfig.accentColor,
+              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 24),
+              child: Text(
+                "Choose Payment Method",
+                style: StyleConfig.fs16cWhitefwBold,
+              ),
+            ),
+            content: Column(
+              children: List.generate(data.paymentTypes.length, (index) {
+                return Column(
+                  children: [
+                    Button(
+                        minWidth: getWidth(context),
+                        onPressed: () {
+                          Navigator.pop(context, data.paymentTypes[index]);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                width: getWidth(context) * 0.3,
+                                child: Text(
+                                  data.paymentTypes[index].name,
+                                  style: StyleConfig.fs14fwBold,
+                                )),
+                            Container(
+                              width: getWidth(context) * 0.3,
+                              padding: EdgeInsets.all(8),
+                              child: ImageView.svg(
+                                  url: data.paymentTypes[index].image,
+                                  height: 50,
+                                  width: 50),
+                            ),
+                          ],
+                        )),
+                  ],
+                );
+              }),
+            ),
+            actions: [
+              Button(
+                minWidth: getWidth(context),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                color: ThemeConfig.red,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Close",
+                  style: StyleConfig.fs14cWhitefwNormal,
                 ),
-
-              ],
-            );
-          }),
-        ) ,
-        actions: [
-          Button(
-            minWidth:getWidth(context),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            color: ThemeConfig.red,
-            onPressed: (){
-            Navigator.pop(context);
-            },
-            child: Text("Close",style: StyleConfig.fs14cWhitefwNormal,),
-
-          )
-        ],
-      );
-
-    });
+              )
+            ],
+          );
+        });
   }
 
   void phonePayInit() {
     PhonePePaymentSdk.init(environment, appId, merchantId, enableLogging)
         .then((val) => {
-      setState(() {
-        result = 'PhonePe SDK Initialized - $val';
-      })
-    })
+              setState(() {
+                result = 'PhonePe SDK Initialized - $val';
+              })
+            })
         .catchError((error) {
       handleError(error);
       return <dynamic>{};
     });
   }
 
-  void startPgTransaction()async{
+  void startPgTransaction() async {
     try {
       var response = PhonePePaymentSdk.startPGTransaction(
           body, callBackUrl, checksum, {}, apiEndPoint, ' ');
       response
           .then((val) => {
-        setState(() {
-
-          if(val != null){
-            String status = val['status'].toString();
-            String error = val['error'].toString();
-            if(status == 'SUCCESS'){
-              result = 'Flow Complete Status : SUCCESS!';
-            }else{
-              result = 'Flow Complete Status : $status and error is $error !';
-            }
-          }else{
-            result = 'Flow Incomplete sorry !';
-          }
-
-        })
-      })
+                setState(() {
+                  if (val != null) {
+                    String status = val['status'].toString();
+                    String error = val['error'].toString();
+                    if (status == 'SUCCESS') {
+                      result = 'Flow Complete Status : SUCCESS!';
+                    } else {
+                      result =
+                          'Flow Complete Status : $status and error is $error !';
+                    }
+                  } else {
+                    result = 'Flow Incomplete sorry !';
+                  }
+                })
+              })
           .catchError((error) {
         handleError(error);
         return <dynamic>{};

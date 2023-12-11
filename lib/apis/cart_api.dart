@@ -21,7 +21,7 @@ class CartApi{
     if(response.result){
       return ResponseModel(response.statusCode,cartResponseFromJson(response.body));
     }else{
-      return ResponseModel(response.statusCode,CartResponse(result: false, message: '', carts: [], cartCount: 0, subTotal: '0.0', total: '0.0', couponDiscount: ''));
+      return ResponseModel(response.statusCode,CartResponse(result: false, message: 'Welcome To Annapurna Mart', carts: [], cartCount: 0, subTotal: '0.0', total: '0.0', couponDiscount: ''));
     }
   }
 

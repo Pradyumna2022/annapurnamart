@@ -39,15 +39,15 @@ class _CheckOutState extends State<CheckOut> {
   String environment = "UAT_SIM";
   String appId = '';
   //PGTESTPAYUAT
-  String merchantId = 'M1U6N00AIFUD';
+  String merchantId = 'PGTESTPAYUAT143';
   bool enableLogging = true;
   String checksum = '';
-  String saltKey = '35ef1faa-5c7e-43a0-a754-40e91507d2dc';
+  String saltKey = 'ab3ab177-b468-4791-8071-275c404d8ab0';
 
   String saltIndex = '1';
   // https://webhook.site/f63d1195-f001-474d-acaa-f7bc4f3b20b1   this fake
   String callBackUrl =
-      'https://dailytest.in/payment.php';
+      'https://store.annapurnamart.shop/api/login';
   String body = '';
 
   String apiEndPoint = '/pg/v1/pay';
@@ -82,6 +82,7 @@ class _CheckOutState extends State<CheckOut> {
   @override
   Widget build(BuildContext context) {
     print(body + '/////////////////////////////////////');
+
     return Scaffold(
       backgroundColor: ThemeConfig.xxlightGrey,
       appBar: CommonAppbar.show(

@@ -40,118 +40,118 @@ void main() {
   ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PhonePayPayment(),
-    );
-  }
-}
-
-/// The route configuration.
-// final GoRouter router = GoRouter(
-//   routes: <RouteBase>[
-//     GoRoute(
-//     path: '/',
-//     builder: (BuildContext context, GoRouterState state) {
-//       return const Splash();
-//     },
-//   ),
-//     GoRoute(
-//       path: '/landing-page',
-//       builder: (BuildContext context, GoRouterState state) {
-//         return const LandingPage();
-//       },
-//     ),
-//
-//   ],
-// );
-//
-//
-//
-// class MyApp extends StatelessWidget {
+// class MyApp extends StatefulWidget {
 //   const MyApp({super.key});
 //
-//   // This widget is the root of your application.
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+//
+// class _MyAppState extends State<MyApp> {
 //   @override
 //   Widget build(BuildContext context) {
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_)=>SettingPresenter()),
-//         ChangeNotifierProvider(create: (context)=>AuthPresenter()),
-//         ChangeNotifierProvider(create: (context)=>MainPresenter()),
-//         ChangeNotifierProvider(create: (context)=>LandingPagePresenter()),
-//         ChangeNotifierProvider(create: (context)=>CartPresenter()),
-//         ChangeNotifierProvider(create: (context)=>HomePresenter()),
-//         ChangeNotifierProvider(create: (context)=>ProductDetailsPresenter()),
-//         ChangeNotifierProvider(create: (context)=>StockLocationsPresenter()),
-//         ChangeNotifierProvider(create: (context)=>UserPresenter(),),
-//         ChangeNotifierProvider(create: (context)=>OrderPresenter()),
-//         ChangeNotifierProvider(create: (context)=>CheckOutPresenter()),
-//         ChangeNotifierProvider(create: (context)=>CategoriesPresenter()),
-//         ChangeNotifierProvider(create: (context)=>FilterPresenter()),
-//         ChangeNotifierProvider(create: (context)=>CouponPresenter()),
-//         ChangeNotifierProvider(create: (context)=>WishlistPresenter()),
-//         ChangeNotifierProvider(create: (context)=>AddressPresenter()),
-//         ChangeNotifierProvider(create: (context)=>WalletPresenter()),
-//         ChangeNotifierProvider(create: (context)=>RefundPresenter()),
-//         ChangeNotifierProvider(create: (context)=>OrderDetailsPresenter()),
-//
-//       ],
-//       child: Consumer<SettingPresenter>(
-//         builder: (context,data,child) {
-//           return MaterialApp(
-//             debugShowCheckedModeBanner: false,
-//             title: AppConfig.appName,
-//             theme: ThemeData(
-//               //primaryTextTheme:GoogleFonts.lobsterTextTheme() ,
-//               primaryColor: ThemeConfig.accentMaterialColor,
-//               primarySwatch:ThemeConfig.accentMaterialColor,
-//               textTheme: GoogleFonts.interTextTheme().copyWith(
-//
-//               ),
-//
-//               //textTheme:
-//             ),
-//             //builder: OneContext().builder,
-//             themeMode: ThemeMode.light,
-//             locale: data.locale,
-//             localeResolutionCallback: (deviceLocale, supportedLocales) {
-//               if (AppLocalizations.delegate.isSupported(deviceLocale!)) {
-//                 return deviceLocale;
-//               }
-//               return const Locale('en');
-//             },
-//             localizationsDelegates: [
-//               AppLocalizations.delegate,
-//               GlobalMaterialLocalizations.delegate,
-//               GlobalWidgetsLocalizations.delegate,
-//               GlobalCupertinoLocalizations.delegate,
-//             ],
-//             supportedLocales: AppLang().supportedLocales(),
-//             // home: Splash(),
-//             initialRoute: '/',
-//             routes: {
-//               "/":(context)=> Splash(),
-//               "/home":(context)=>Home(id: getQueryParameter(context,"id"),),
-//               "/main":(context)=>Main(),
-//               "/landing_page":(context)=>LandingPage(),
-//             },
-//
-//           );
-//         }
-//       ),
+//     return MaterialApp(
+//       home: PhonePayPayment(),
 //     );
 //   }
 // }
+
+    ///The route configuration.
+final GoRouter router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+    path: '/',
+    builder: (BuildContext context, GoRouterState state) {
+      return const Splash();
+    },
+  ),
+    GoRoute(
+      path: '/landing-page',
+      builder: (BuildContext context, GoRouterState state) {
+        return const LandingPage();
+      },
+    ),
+
+  ],
+);
+
+
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_)=>SettingPresenter()),
+        ChangeNotifierProvider(create: (context)=>AuthPresenter()),
+        ChangeNotifierProvider(create: (context)=>MainPresenter()),
+        ChangeNotifierProvider(create: (context)=>LandingPagePresenter()),
+        ChangeNotifierProvider(create: (context)=>CartPresenter()),
+        ChangeNotifierProvider(create: (context)=>HomePresenter()),
+        ChangeNotifierProvider(create: (context)=>ProductDetailsPresenter()),
+        ChangeNotifierProvider(create: (context)=>StockLocationsPresenter()),
+        ChangeNotifierProvider(create: (context)=>UserPresenter(),),
+        ChangeNotifierProvider(create: (context)=>OrderPresenter()),
+        ChangeNotifierProvider(create: (context)=>CheckOutPresenter()),
+        ChangeNotifierProvider(create: (context)=>CategoriesPresenter()),
+        ChangeNotifierProvider(create: (context)=>FilterPresenter()),
+        ChangeNotifierProvider(create: (context)=>CouponPresenter()),
+        ChangeNotifierProvider(create: (context)=>WishlistPresenter()),
+        ChangeNotifierProvider(create: (context)=>AddressPresenter()),
+        ChangeNotifierProvider(create: (context)=>WalletPresenter()),
+        ChangeNotifierProvider(create: (context)=>RefundPresenter()),
+        ChangeNotifierProvider(create: (context)=>OrderDetailsPresenter()),
+
+      ],
+      child: Consumer<SettingPresenter>(
+        builder: (context,data,child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: AppConfig.appName,
+            theme: ThemeData(
+              //primaryTextTheme:GoogleFonts.lobsterTextTheme() ,
+              primaryColor: ThemeConfig.accentMaterialColor,
+              primarySwatch:ThemeConfig.accentMaterialColor,
+              textTheme: GoogleFonts.interTextTheme().copyWith(
+
+              ),
+
+              //textTheme:
+            ),
+            //builder: OneContext().builder,
+            themeMode: ThemeMode.light,
+            locale: data.locale,
+            localeResolutionCallback: (deviceLocale, supportedLocales) {
+              if (AppLocalizations.delegate.isSupported(deviceLocale!)) {
+                return deviceLocale;
+              }
+              return const Locale('en');
+            },
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLang().supportedLocales(),
+            // home: Splash(),
+            initialRoute: '/',
+            routes: {
+              "/":(context)=> Splash(),
+              "/home":(context)=>Home(id: getQueryParameter(context,"id"),),
+              "/main":(context)=>Main(),
+              "/landing_page":(context)=>LandingPage(),
+            },
+
+          );
+        }
+      ),
+    );
+  }
+}
 
 
 

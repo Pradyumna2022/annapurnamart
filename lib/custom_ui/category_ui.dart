@@ -18,7 +18,7 @@ class CategoryUi extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ImageView(url: img,width:40.0,height: 40.0,),
+          ImageView(url: img,width:65.0,height: 50.0,),
           SizedBox(height: 8,),
           Text(name,style: StyleConfig.fs12,maxLines: 1,textAlign: TextAlign.center,)
         ],

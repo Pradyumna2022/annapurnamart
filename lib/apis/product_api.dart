@@ -41,8 +41,11 @@ class ProductApi {
       "App-Language": app_language.$,
       "Stock-Location-Id": stock_location_id.$
     };
+
     header.addAll(getCurrencyHeader());
+
     ApiResponse response = await ApiRequest.get(url, header);
+
     if (response.result) {
       return ResponseModel(
           response.statusCode, productMiniResponseFromJson(response.body));

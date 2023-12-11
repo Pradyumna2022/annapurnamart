@@ -20,8 +20,21 @@ class ProductMiniResponse {
   });
 
   factory ProductMiniResponse.fromJson(Map<String, dynamic> json) => ProductMiniResponse(
-    data: List<ProductMini>.from(json["data"].map((x) => ProductMini.fromJson(x))),
-  );
+    data: List<ProductMini>.from(json["data"].map((x) => ProductMini.fromJson(x))),);
+
+  // factory ProductMiniResponse.fromJson(Map<String, dynamic> json) {
+  //   final List<dynamic>? dataList = json["data"];
+  //
+  //   if (dataList == null) {
+  //     // Handle null or missing "data" key here.
+  //     return ProductMiniResponse(data: []);
+  //   }
+  //
+  //   return ProductMiniResponse(
+  //     data: List<ProductMini>.from(dataList.map((x) => ProductMini.fromJson(x))),
+  //   );
+  // }
+
 
   Map<String, dynamic> toJson() => {
     "data": List<dynamic>.from(data.map((x) => x.toJson())),

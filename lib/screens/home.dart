@@ -1,4 +1,3 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:grostore/app_lang.dart';
@@ -29,7 +28,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<HomePresenter>(context,listen: false).setContext(context);
+    Provider.of<HomePresenter>(context, listen: false).setContext(context);
     Provider.of<HomePresenter>(context, listen: false).initState(context);
 
     super.initState();
@@ -44,6 +43,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: ThemeConfig.xxlightGrey,
@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildSliderSection(data),
+                    // Text("sdfhsdhfsd"),
                     SizedBox(
                       height: 14,
                     ),
@@ -88,6 +89,9 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 14,
                     ),
+
+                    //  **********************  this is our best selling part here !!!!!!!!!  *********
+
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: StyleConfig.padding),
@@ -108,17 +112,24 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                   const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
+
+                    //  **********************  simmer effect here of the our best selling products  *********
+
                     Container(
-                     // color: Colors.red,
-                      height:200,
+                        // color: Colors.red,
+                        height: 200,
                         child: buildBestSellingProductSection(data)),
-                   const SizedBox(height: 14,),
+
+                    //  **********************  end of simmer effect here of the our best selling products  *********
+                    const SizedBox(
+                      height: 14,
+                    ),
                     Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                          EdgeInsets.symmetric(horizontal: StyleConfig.padding),
                       child: Row(
                         children: [
                           Text(
@@ -143,7 +154,6 @@ class _HomeState extends State<Home> {
                     const SizedBox(
                       height: 14,
                     ),
-
                   ],
                 ),
               ),
@@ -164,15 +174,20 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 return Button(
                   minWidth: 40,
-                  onPressed: (){
-                    MakeRoute.go(context, Filter(category_id:data.topCategoryList[index].id.toString() ,));
+                  onPressed: () {
+                    MakeRoute.go(
+                        context,
+                        Filter(
+                          category_id:
+                              data.topCategoryList[index].id.toString(),
+                        ));
                   },
                   child: SizedBox(
                     width: 100,
                     child: CategoryUi(
-
                         img: data.topCategoryList[index].thumbnailImage,
-                        name: data.topCategoryList[index].name),
+                        name: data.topCategoryList[index].name
+                    ),
                   ),
                 );
               },
@@ -196,7 +211,7 @@ class _HomeState extends State<Home> {
           aspectRatio: 2,
           viewportFraction: 0.94,
           height: 150,
-         // enlargeCenterPage: true,
+          // enlargeCenterPage: true,
           scrollDirection: Axis.horizontal,
           autoPlay: true,
           onPageChanged: (index, reason) {
@@ -212,11 +227,15 @@ class _HomeState extends State<Home> {
         preferredSize: Size(getWidth(context), 54),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-          margin: EdgeInsets.only(top:12, left: 24, right: 24),
+          margin: EdgeInsets.only(top: 12, left: 24, right: 24),
           width: getWidth(context),
           decoration: BoxDecorations.shadow(radius: 6.0),
           child: Button(
-            onPressed: ()=>MakeRoute.go(context, Filter(isFocus: true,)),
+            onPressed: () => MakeRoute.go(
+                context,
+                Filter(
+                  isFocus: true,
+                )),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -279,43 +298,63 @@ class _HomeState extends State<Home> {
             childAspectRatio: 0.8),
         itemCount: 10,
         itemBuilder: (context, index) {
-          return Shimmers(width: 160, height: 186,radius: 8,);
+          return Shimmers(
+            width: 160,
+            height: 186,
+            radius: 8,
+          );
         });
   }
-  
-Widget  buildBestSellingProductSection(HomePresenter data){
-   return
-     data.isBestSellingProductInitial
-      // false
-           ?
-       ListView.separated(
-         padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-         scrollDirection: Axis.horizontal,
-           itemBuilder: (context, index) {
-         return ProductCard(
-           product: data.bestSellingProductList[index],context: this.context,);
-       }, separatorBuilder: (context,index)=>SizedBox(width: 10,), itemCount: data.bestSellingProductList.length)
-       :Shimmers.horizontalList(10, 160, 160);
+
+  Widget buildBestSellingProductSection(HomePresenter data) {
+    return data.isBestSellingProductInitial
+        // false
+        ? ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return
+                ProductCard(
+                product: data.bestSellingProductList[index],
+                context: this.context,
+              )
+              ;
+            },
+            separatorBuilder: (context, index) => SizedBox(
+                  width: 10,
+                ),
+            itemCount:
+            data.bestSellingProductList.length
+    )
+        : Shimmers.horizontalList(10, 160, 160);
+
   }
 
-
-
-Widget  allProducts(HomePresenter data){
-   return data.isAllProductInitial?GridView.builder(
-        padding: EdgeInsets.only(left: StyleConfig.padding,right: StyleConfig.padding,bottom: 20),
-
-       shrinkWrap: true,
-       physics: NeverScrollableScrollPhysics(),
-
-       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-           crossAxisCount: 2,
-           crossAxisSpacing: 16,
-           mainAxisSpacing: 16,
-           childAspectRatio: 0.8),
-        itemCount: data.products.length,
-        itemBuilder: (context, index) {
-          return ProductCard(
-              product: data.products[index],context: this.context,);
-        }):allProductShimmer();
+  Widget allProducts(HomePresenter data) {
+    return data.isAllProductInitial
+        ? 
+    GridView.builder(
+            padding: EdgeInsets.only(
+                left: StyleConfig.padding,
+                right: StyleConfig.padding,
+                bottom: 20),
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.8),
+            itemCount:
+            data.products.length,
+            itemBuilder: (context, index) {
+              return
+                ProductCard(
+                product: data.products[index],
+                context: this.context,
+              )
+              ;
+            })
+        : allProductShimmer();
   }
 }

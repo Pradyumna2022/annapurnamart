@@ -111,8 +111,7 @@ class AuthPresenter extends ChangeNotifier {
 
   makeLogin() async {
     Loading.show(_context!);
-    LoginResponse response =
-        await AuthApi.login(makeLoginPostBody(), _context!);
+    LoginResponse response = await AuthApi.login(makeLoginPostBody(), _context!);
     Loading.close();
     print(response.result.toString() + 'jjjjjjjjjjjjjjjjjjjj');
     if (response.result) {

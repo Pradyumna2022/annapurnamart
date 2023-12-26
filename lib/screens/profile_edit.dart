@@ -14,24 +14,20 @@ import 'package:grostore/helpers/device_info_helper.dart';
 import 'package:grostore/presenters/user_presenter.dart';
 import 'package:provider/provider.dart';
 
-
 class ProfileEdit extends StatefulWidget {
   @override
   _ProfileEditState createState() => _ProfileEditState();
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildAppBar(context),
-      body: Consumer<UserPresenter>(
-        builder: (context,data,child) {
-          return buildBody(data);
-        }
-      ),
+      body: Consumer<UserPresenter>(builder: (context, data, child) {
+        return buildBody(data);
+      }),
     );
   }
 
@@ -47,39 +43,39 @@ class _ProfileEditState extends State<ProfileEdit> {
       ),
       title: Text(
         AppLang.local(context).edit_profile_ucf,
-        style: TextStyle(fontSize: 16, color: ThemeConfig.fontColor,fontWeight: FontWeight.bold),
+        style: TextStyle(
+            fontSize: 16,
+            color: ThemeConfig.fontColor,
+            fontWeight: FontWeight.bold),
       ),
       elevation: 0.0,
       titleSpacing: 0,
     );
   }
 
- Widget buildBody(UserPresenter data) {
-    
-      return RefreshIndicator(
-        onRefresh: data.refresh,
-        color: ThemeConfig.accentColor,
-        backgroundColor: Colors.white,
-        //onRefresh: _onPageRefresh,
-        displacement: 10,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          slivers: [
-            SliverList(
-              delegate: SliverChildListDelegate([
-                buildTopSection(data),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-
-                ),
-                buildProfileForm(data)
-              ]),
-            )
-          ],
-        ),
-      );
-    
+  Widget buildBody(UserPresenter data) {
+    return RefreshIndicator(
+      onRefresh: data.refresh,
+      color: ThemeConfig.accentColor,
+      backgroundColor: Colors.white,
+      //onRefresh: _onPageRefresh,
+      displacement: 10,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate([
+              buildTopSection(data),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              ),
+              buildProfileForm(data)
+            ]),
+          )
+        ],
+      ),
+    );
   }
 
   buildTopSection(UserPresenter data) {
@@ -89,8 +85,19 @@ class _ProfileEditState extends State<ProfileEdit> {
           padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
           child: Stack(
             children: [
-
-              data.file!=null?ImageView.roundFileImage(file:File(data.file!.path),height: 120.0,width: 120.0,context: context, radius: 60):ImageView.round(url:SystemData.userInfo.avatar,height: 120.0,width: 120.0,context: context, radius: 60),
+              data.file != null
+                  ? ImageView.roundFileImage(
+                      file: File(data.file!.path),
+                      height: 120.0,
+                      width: 120.0,
+                      context: context,
+                      radius: 60)
+                  : ImageView.round(
+                      url: SystemData.userInfo.avatar,
+                      height: 120.0,
+                      width: 120.0,
+                      context: context,
+                      radius: 60),
 /*
               Container(
                 width: 120,
@@ -119,8 +126,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                   child: Button(
                     padding: EdgeInsets.all(0),
                     shape: CircleBorder(
-                      side:
-                          new BorderSide(color: ThemeConfig.lightGrey),
+                      side: new BorderSide(color: ThemeConfig.lightGrey),
                     ),
                     color: ThemeConfig.lightGrey,
                     onPressed: () {
@@ -150,7 +156,6 @@ class _ProfileEditState extends State<ProfileEdit> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildBasicInfo(data),
-
             buildChangePassword(data),
           ],
         ),
@@ -161,243 +166,250 @@ class _ProfileEditState extends State<ProfileEdit> {
   Column buildChangePassword(UserPresenter data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 30.0, bottom: 10),
+          child: Text(
+            AppLang.local(context).password_change_ucf,
+            style: StyleConfig.fs14fwBold,
+            textHeightBehavior:
+                TextHeightBehavior(applyHeightToFirstAscent: false),
+            textAlign: TextAlign.center,
+            softWrap: false,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            AppLang.local(context).password,
+            style: TextStyle(
+                fontSize: 12,
+                color: ThemeConfig.fontColor,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0,bottom: 10),
-                child: Text(
-                  AppLang.local(context).password_change_ucf,
-                  style: StyleConfig.fs14fwBold,
-                  textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
-                  textAlign: TextAlign.center,
-                  softWrap: false,
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLang.local(context).password,
-                  style: TextStyle(
-                    fontSize: 12,
-                      color: ThemeConfig.fontColor, fontWeight: FontWeight.normal),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      decoration: BoxDecorations.basic(),
-                      height: 36,
-                      child: TextField(
-                        style: TextStyle(fontSize: 12),
-                        controller: data.passwordController,
-                        autofocus: false,
-                        obscureText: !data.showPassword,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecorations.basic(
-                            hint_text: "• • • • • • • •").copyWith(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: ThemeConfig.accentColor),
-
-                            ),
-                            suffixIcon: InkWell(
-                              onTap: (){
-                                data.passwordShowHide();
-                              },
-                              child: Icon(data.showPassword?Icons.visibility_outlined:Icons.visibility_off_outlined,
-                                color: ThemeConfig.accentColor,
-                              ),
-                            ),),
+              Container(
+                decoration: BoxDecorations.basic(),
+                height: 36,
+                child: TextField(
+                  style: TextStyle(fontSize: 12),
+                  controller: data.passwordController,
+                  autofocus: false,
+                  obscureText: !data.showPassword,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration:
+                      InputDecorations.basic(hint_text: "• • • • • • • •")
+                          .copyWith(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ThemeConfig.accentColor),
+                    ),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        data.passwordShowHide();
+                      },
+                      child: Icon(
+                        data.showPassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: ThemeConfig.accentColor,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        AppLang.local(context)
-                            .password_must_be_at_last_6_digit,
-                        style: TextStyle(
-                            color: ThemeConfig.accentColor,
-                            fontStyle: FontStyle.italic),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLang.local(context)
-                      .confirm_password_ucf,
-                  style: TextStyle(
-                    fontSize: 12,
-                      color: ThemeConfig.fontColor, fontWeight: FontWeight.normal),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  decoration: BoxDecorations.basic(),
-                  height: 36,
-                  child: TextField(
-                    controller: data.passwordConfirmController,
-                    autofocus: false,
-                    obscureText: !data.showConfirmPassword,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecorations.basic(
-                        hint_text: "• • • • • • • •").copyWith(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ThemeConfig.accentColor),
-
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: (){
-                            data.conPasswordShowHide();
-                          },
-                          child: Icon(data.showConfirmPassword?Icons.visibility_outlined:Icons.visibility_off_outlined,
-                            color: ThemeConfig.accentColor,
-                          ),
-                        )),
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 150
-                  ,
-                  child: Button(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    minWidth: MediaQuery.of(context).size.width,
-                    color: ThemeConfig.accentColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(8.0))),
-                    child: Text(
-                      AppLang.local(context).update_password_ucf,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () {
-                      data.onPressUpdatePassword(context);
-                    },
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  AppLang.local(context).password_must_be_at_last_6_digit,
+                  style: TextStyle(
+                      color: ThemeConfig.accentColor,
+                      fontStyle: FontStyle.italic),
                 ),
-              ),
+              )
             ],
-          );
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            AppLang.local(context).confirm_password_ucf,
+            style: TextStyle(
+                fontSize: 12,
+                color: ThemeConfig.fontColor,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Container(
+            decoration: BoxDecorations.basic(),
+            height: 36,
+            child: TextField(
+              controller: data.passwordConfirmController,
+              autofocus: false,
+              obscureText: !data.showConfirmPassword,
+              enableSuggestions: false,
+              autocorrect: false,
+              decoration:
+                  InputDecorations.basic(hint_text: "• • • • • • • •").copyWith(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: ThemeConfig.accentColor),
+                      ),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          data.conPasswordShowHide();
+                        },
+                        child: Icon(
+                          data.showConfirmPassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: ThemeConfig.accentColor,
+                        ),
+                      )),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            alignment: Alignment.center,
+            width: 150,
+            child: Button(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              minWidth: MediaQuery.of(context).size.width,
+              color: ThemeConfig.accentColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+              child: Text(
+                AppLang.local(context).update_password_ucf,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {
+                data.onPressUpdatePassword(context);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Column buildBasicInfo(UserPresenter data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 18.0),
+          child: Text(
+            AppLang.local(context).basic_info,
+            style: StyleConfig.fs14fwBold,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            AppLang.local(context).name,
+            style: TextStyle(
+                fontSize: 12,
+                color: ThemeConfig.fontColor,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 14.0),
+          child: Container(
+            decoration: BoxDecorations.basic(),
+            height: 36,
+            child: TextField(
+              controller: data.nameController,
+              autofocus: false,
+              style: TextStyle(color: ThemeConfig.fontColor, fontSize: 12),
+              decoration:
+                  InputDecorations.basic(hint_text: "John Doe").copyWith(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: ThemeConfig.accentColor),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            AppLang.local(context).phone,
+            style: TextStyle(
+                fontSize: 12,
+                color: ThemeConfig.fontColor,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 14.0),
+          child: Container(
+            decoration: BoxDecorations.basic(),
+            height: 36,
+            child: TextField(
+              controller: data.phoneController,
+              autofocus: false,
+              keyboardType: TextInputType.phone,
+              style: TextStyle(color: ThemeConfig.fontColor, fontSize: 12),
+              decoration:
+                  InputDecorations.basic(hint_text: "+01xxxxxxxxxx").copyWith(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: ThemeConfig.accentColor),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Visibility(
+          visible: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
-                child: Text(
-                  AppLang.local(context).basic_info,
-                  style: StyleConfig.fs14fwBold,
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Text(
-                  AppLang.local(context).name,
+                  AppLang.local(context).email,
                   style: TextStyle(
-                    fontSize: 12,
-                      color: ThemeConfig.fontColor, fontWeight: FontWeight.normal),
+                      fontSize: 12,
+                      color: ThemeConfig.fontColor,
+                      fontWeight: FontWeight.normal),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 14.0),
                 child: Container(
-                  decoration: BoxDecorations.basic(),
-                  height: 36,
-                  child: TextField(
-                    controller: data.nameController,
-                    autofocus: false,
-                    style: TextStyle(color:ThemeConfig.fontColor,fontSize: 12),
-                    decoration: InputDecorations.basic(
-                        hint_text: "John Doe").copyWith(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ThemeConfig.accentColor),
-
-                        ),),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text(
-                  AppLang.local(context).phone,
-                  style: TextStyle(
-                    fontSize: 12,
-                      color: ThemeConfig.fontColor, fontWeight: FontWeight.normal),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Container(
-                  decoration: BoxDecorations.basic(),
-                  height: 36,
-                  child: TextField(
-                    controller: data.phoneController,
-                    autofocus: false,
-                    keyboardType:TextInputType.phone,
-                    style: TextStyle(color:ThemeConfig.fontColor,fontSize: 12),
-                    decoration: InputDecorations.basic(
-                        hint_text: "+01xxxxxxxxxx").copyWith(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ThemeConfig.accentColor),
-
-                        ),),
-                  ),
-                ),
-              ),
-
-
-              Visibility(
-                visible: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        AppLang.local(context).email,
-                        style: TextStyle(
-                          fontSize: 12,
-                            color: ThemeConfig.fontColor,
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 14.0),
-                      child: Container(
-                        decoration: BoxDecorations.basic(),
-                        height: 36,
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        alignment: Alignment.centerLeft,
-                        child: Text(data.emailController.text,style: TextStyle(fontSize: 12,color: ThemeConfig.grey),)
-                        /*TextField(
+                    decoration: BoxDecorations.basic(),
+                    height: 36,
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      data.emailController.text,
+                      style: TextStyle(fontSize: 12, color: ThemeConfig.grey),
+                    )
+                    /*TextField(
                           style: TextStyle(color:ThemeConfig.grey_153,fontSize: 12),
                           enabled: false,
                           enableIMEPersonalizedLearning: true,
@@ -417,38 +429,36 @@ class _ProfileEditState extends State<ProfileEdit> {
 
                         ),),
                         ),*/
-                      ),
                     ),
-                  ],
-                ),
-              ),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: getWidth(context)/2.5,
-                  child:Button(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    minWidth: MediaQuery.of(context).size.width,
-                    color: ThemeConfig.accentColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(8.0))),
-                    child: Text(
-                      AppLang.local(context).update_profile_ucf,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () {
-                      data.onPressUpdate(context);
-                    },
-                  ),
-                ),
               ),
             ],
-          );
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            alignment: Alignment.center,
+            width: getWidth(context) / 2.5,
+            child: Button(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              minWidth: MediaQuery.of(context).size.width,
+              color: ThemeConfig.accentColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+              child: Text(
+                AppLang.local(context).update_profile_ucf,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {
+                data.onPressUpdate(context);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

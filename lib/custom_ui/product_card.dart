@@ -43,7 +43,7 @@ class ProductCard extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Hero(
                       tag: product,
-                        child: ImageView(url: product.thumbnailImage,width: 134,height: 92,))),
+                        child: ImageView(url: product.thumbnailImage,width: 104,height: 92,))),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0,top: 12),
                   child: Text(product.categories.first.name,style: StyleConfig.fs10,),
@@ -56,7 +56,6 @@ class ProductCard extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 12.0,top: 8),
                   child: Text(showPrice(product.price),style: StyleConfig.fs14cRedfwBold,),
                 ),
-
               ],
             ),
           ),

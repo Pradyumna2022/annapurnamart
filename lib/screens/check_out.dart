@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grostore/app_lang.dart';
 import 'package:grostore/configs/style_config.dart';
 import 'package:grostore/configs/theme_config.dart';
@@ -22,7 +23,7 @@ import 'package:grostore/screens/main.dart';
 import 'package:intl/intl.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import '../phone_pay_payment.dart';
 
 Object? result;
@@ -35,29 +36,45 @@ class CheckOut extends StatefulWidget {
 }
 
 class _CheckOutState extends State<CheckOut> {
+  /*  response of the phone pe payment **************************************************
+  {success: true,
+  code: PAYMENT_SUCCESS,
+  message: Your payment is successful.,
+  data: {merchantId: PGTESTPAYUAT143,
+  merchantTransactionId: 1702979222358302,
+  transactionId: T2312191510205945373993,
+  amount: 10000, state: COMPLETED,
+  responseCode: SUCCESS,
+  paymentInstrument: {type: CARD, cardType: CREDIT_CARD,
+  pgTransactionId: PG2207221432267522530776,
+  bankTransactionId: null, pgAuthorizationCode: null,
+  arn: null, bankId: , brn: B12345}}}
+
+   */
+
+
   // ******** value of the init of flutter sdk
   String environment = "UAT_SIM";
   String appId = '';
   //PGTESTPAYUAT
   String merchantId = 'PGTESTPAYUAT143';
+  String transactionId = DateTime.now().microsecondsSinceEpoch.toString();
   bool enableLogging = true;
   String checksum = '';
   String saltKey = 'ab3ab177-b468-4791-8071-275c404d8ab0';
-
+  // https://store.annapurnamart.shop/api/login
   String saltIndex = '1';
   // https://webhook.site/f63d1195-f001-474d-acaa-f7bc4f3b20b1   this fake
-  String callBackUrl =
-      'https://store.annapurnamart.shop/api/login';
+  String callBackUrl = 'https://store.annapurnamart.shop/api/login';
   String body = '';
-
   String apiEndPoint = '/pg/v1/pay';
 
   getCheckSum() {
     final requestData = {
       "merchantId": merchantId,
-      "merchantTransactionId": "transaction_123",
+      "merchantTransactionId": transactionId,
       "merchantUserId": "90223250",
-      "amount": 1000,
+      "amount": 10000,
       "mobileNumber": "9999999999",
       "callbackUrl": callBackUrl,
       "paymentInstrument": {
@@ -77,11 +94,11 @@ class _CheckOutState extends State<CheckOut> {
     super.initState();
     phonePayInit();
     body = getCheckSum().toString();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    print(body + '/////////////////////////////////////');
 
     return Scaffold(
       backgroundColor: ThemeConfig.xxlightGrey,
@@ -151,7 +168,7 @@ class _CheckOutState extends State<CheckOut> {
                 decoration: BoxDecorations.shadow(radius: 8),
                 margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
                 padding:
-                    EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
+                EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
                 child: Button(
                   onPressed: () async {
                     PaymentTypesResponse? type = await showPaymentMethods(data);
@@ -161,33 +178,48 @@ class _CheckOutState extends State<CheckOut> {
                   },
                   alignment: Alignment.centerLeft,
                   minWidth: getWidth(context),
-                  child: Row(
-                    children: [
-                      Container(
-                          width: getWidth(context) * 0.38,
-                          child: Text(
-                            data.selectedPaymentMethod?.name ?? '',
-                            style: StyleConfig.fs16fwBold,
-                          )),
-                      Container(
-                        width: getWidth(context) * 0.3,
-                        padding: EdgeInsets.all(8),
-                        child: ImageView.svg(
-                            url: data.selectedPaymentMethod?.image ?? "",
-                            height: 50,
-                            width: 50),
-                      ),
-                      Spacer(),
-                      Image.asset(
-                        getAssetIcon("next.png"),
-                        width: 16,
-                        height: 16,
-                      ),
-                    ],
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                                width: getWidth(context) * 0.38,
+                                child: Text(
+                                  data.selectedPaymentMethod?.name ?? '',
+                                  style: StyleConfig.fs16fwBold,
+                                )
+                            ),
+
+                            Container(
+                              width: getWidth(context) * 0.3,
+                              padding: EdgeInsets.all(8),
+                              child: ImageView.svg(
+                                  url: data.selectedPaymentMethod?.image ?? "",
+                                  height: 50,
+                                  width: 50),
+                            ),
+                            Spacer(),
+                            Image.asset(
+                              getAssetIcon("next.png"),
+                              width: 16,
+                              height: 16,
+                            ),
+                          ],
+                        ),
+
+                        //  ***********   this is phone pe
+
+                      ],
+                    ),
                   ),
                 ),
               ),
-
+              SizedBox(
+                height: 10,
+              ),
+              Text("resul $result"),
               // *************  for the phone pay integration *******************
 
               Container(
@@ -250,8 +282,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding: EdgeInsets.symmetric(
-                    horizontal: StyleConfig.padding, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding, vertical: 10),
                 decoration: BoxDecorations.shadow(radius: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,6 +372,8 @@ class _CheckOutState extends State<CheckOut> {
                     SizedBox(
                       height: 10,
                     ),
+
+                    //*********  this is our order summary ********
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -354,6 +387,9 @@ class _CheckOutState extends State<CheckOut> {
                         ),
                       ],
                     ),
+
+
+
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: DottedLine(
@@ -386,6 +422,7 @@ class _CheckOutState extends State<CheckOut> {
                   ],
                 ),
               ),
+
               SizedBox(
                 height: 24,
               ),
@@ -957,22 +994,24 @@ class _CheckOutState extends State<CheckOut> {
       var response = PhonePePaymentSdk.startPGTransaction(
           body, callBackUrl, checksum, {}, apiEndPoint, ' ');
       response
-          .then((val) => {
-                setState(() {
-                  if (val != null) {
-                    String status = val['status'].toString();
-                    String error = val['error'].toString();
-                    if (status == 'SUCCESS') {
-                      result = 'Flow Complete Status : SUCCESS!';
-                    } else {
-                      result =
-                          'Flow Complete Status : $status and error is $error !';
-                    }
-                  } else {
-                    result = 'Flow Incomplete sorry !';
-                  }
-                })
-              })
+          .then((val) async {
+        print(val.toString() +"llllllllllllllllllllllllllllllllllllllllll");
+        if (val != null) {
+          String status = val['status'].toString();
+          String error = val['error'].toString();
+          if (status == 'SUCCESS') {
+
+            await checkStatus();
+            result = 'Flow Complete Status : SUCCESS!';
+          } else {
+            result =
+            'Flow Complete Status : $status and error is $error !';
+          }
+        } else {
+          result = 'Flow Incomplete sorry !';
+        }
+
+      })
           .catchError((error) {
         handleError(error);
         return <dynamic>{};
@@ -986,5 +1025,38 @@ class _CheckOutState extends State<CheckOut> {
     setState(() {
       result = {'error': error};
     });
+  }
+
+  checkStatus() async{
+    try{
+      String url ='https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/$merchantId/$transactionId';
+      String concatString = '/pg/v1/status/$merchantId/$transactionId$saltKey';
+      var bytes = utf8.encode(concatString);
+      var digest = sha256.convert(bytes).toString();
+      var xVerify = "$digest###$saltIndex";
+
+      Map<String , String> header = {
+        'Content-Type': 'application/json',
+        'X-VERIFY': xVerify,
+        'X-MERCHANT-ID': merchantId
+      };
+      await http.get(Uri.parse(url),headers: header).then((value) {
+        Map<String,dynamic> res = jsonDecode(value.body);
+        print('shuendnnnnnnnnnnn  $res');
+        try{
+          if(res['code'] == 'PAYMENT_SUCCESS' && res['data']['responseCode'] == 'SUCCESS'){
+            Fluttertoast.showToast(msg: res['message'],backgroundColor: Colors.green,);
+
+          }else{
+            Fluttertoast.showToast(msg: 'something went wrong !',backgroundColor: Colors.red);
+          }
+        }
+        catch(e){
+          Fluttertoast.showToast(msg: 'function error of the catch and try log',backgroundColor: Colors.red);
+        }
+      });
+    }catch(e){
+      Fluttertoast.showToast(msg: 'this is first and main error',backgroundColor: Colors.red);
+    }
   }
 }

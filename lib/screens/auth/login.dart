@@ -18,6 +18,7 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../../custom_ui/BoxDecorations.dart';
 import '../../helpers/common_functions.dart';
+import '../../helpers/shared_value_helper.dart';
 import '../profile.dart';
 import 'otp_verification.dart';
 
@@ -38,10 +39,12 @@ class _LoginState extends State<Login> {
         'type':  'newotp'
       });
       if(phone.toString().isNotEmpty){
+
         print(phone.toString()+'this is phone ');
         print('means your phone isNotEmpty'+phone.toString());
         var data = jsonDecode(response.body.toString());
         print(data);
+
         // Fluttertoast.showToast(msg: data['message']);
         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerification(mobileNumber: phone.toString(),)));
       }else{
@@ -193,7 +196,6 @@ class _LoginState extends State<Login> {
                   )),
             ),
 
-
             // ********************* This is your password field **********************
 
             //  ..............................  password 88888888888888888888888888888888888888
@@ -297,8 +299,6 @@ class _LoginState extends State<Login> {
             // ),
 
             //****************   verify with mobile number *************
-
-
 
             Visibility(
               visible: visible,
@@ -412,67 +412,66 @@ class _LoginState extends State<Login> {
             Visibility(
               visible: !visible,
               child: Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: Container(
-                height: 45,
-                child: Button.minSize(
-                    width: getWidth(context),
-                    height: 50,
-                    color: ThemeConfig.accentColor,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                    child: Text(
-                      'Send OTP',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () {
-                      Country regCountry = CountryCode().get().last;
-                      String regPhone = data.regPhoneNumberController.text.toString();
-                      if (regPhone.isNotEmpty) {
-                        if(regPhone.length<9){
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Container(
+                  height: 45,
+                  child: Button.minSize(
+                      width: getWidth(context),
+                      height: 50,
+                      color: ThemeConfig.accentColor,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6.0))),
+                      child: Text(
+                        'Send OTP',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      onPressed: () {
+                        Country regCountry = CountryCode().get().first;
+                        String regPhone = data.regPhoneNumberController.text.toString();
+                        if (regPhone.isNotEmpty) {
+                          if(regPhone.length<9){
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text('Your phone number is not valid',style: TextStyle(
+                                      fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold
+                                  ),),
+                                  content: Text('Please try again',style: TextStyle(
+                                      fontSize: 12,color: Colors.green,fontWeight: FontWeight.bold
+                                  ),),
+                                )
+                            );
+                          }else{
+                            var allPhoneNumber = regCountry.dial_code +regPhone;
+                            login(allPhoneNumber.toString());
+                          }
+                        }else{
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                title: Text('Your phone number is not valid',style: TextStyle(
-                                  fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold
+                                title: Text('Your phone number is Empty',style: TextStyle(
+                                    fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold
                                 ),),
-                                content: Text('Please try again',style: TextStyle(
+                                content: Text('Please Enter Your Phone',style: TextStyle(
                                     fontSize: 12,color: Colors.green,fontWeight: FontWeight.bold
                                 ),),
                               )
                           );
-                        }else{
-                          var allPhoneNumber = regCountry.dial_code +regPhone;
-                          login(allPhoneNumber.toString());
                         }
-                      }else{
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text('Your phone number is Empty',style: TextStyle(
-                                  fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold
-                              ),),
-                              content: Text('Please Enter Your Phone',style: TextStyle(
-                                  fontSize: 12,color: Colors.green,fontWeight: FontWeight.bold
-                              ),),
-                            )
-                        );
-                      }
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => OtpVerification()
-                      //   ),
-                      // );
-                    }),
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => OtpVerification()
+                        //   ),
+                        // );
+                      }),
+                ),
               ),
-            ),
 
             ),
-
 
             SizedBox(height: 20,),
 
@@ -503,7 +502,6 @@ class _LoginState extends State<Login> {
                     ],
                   )),
             ),
-
 
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
@@ -561,7 +559,8 @@ class _LoginState extends State<Login> {
             SizedBox(height: 16.0),
             Expanded(
               child: SingleChildScrollView(
-                child: Consumer<AuthPresenter>(
+                child:
+                Consumer<AuthPresenter>(
                     builder: (context, filterData, child) {
                   return Column(
                     children: List.generate(filterData.filteredCountry.length,
@@ -578,6 +577,7 @@ class _LoginState extends State<Login> {
                           data.onChangeCountry(country);
                           Navigator.of(context).pop();
                           filterData.filteredCountry = filterData.country;
+                          print(country.dial_code);
                         },
                       );
                     }),

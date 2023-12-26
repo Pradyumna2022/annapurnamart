@@ -40,7 +40,7 @@ class _SplashState extends State<Splash> {
       show_landing_page.load().then((value) {
         checkLogin();
       });
-      //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Main()), (route) => false);
+      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Main()), (route) => false);
     });
   }
 

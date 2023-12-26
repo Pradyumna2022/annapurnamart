@@ -1,46 +1,34 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:grostore/app_lang.dart';
 import 'package:grostore/configs/style_config.dart';
 import 'package:grostore/configs/theme_config.dart';
 import 'package:grostore/custom_ui/Button.dart';
 import 'package:grostore/custom_ui/auth_ui.dart';
-import 'package:grostore/custom_ui/input_decorations.dart';
 import 'package:grostore/helpers/device_info_helper.dart';
-import 'package:grostore/helpers/route.dart';
 import 'package:grostore/presenters/auth/auth_presenter.dart';
-import 'package:grostore/screens/auth/password_forget.dart';
-import 'package:grostore/screens/auth/registration.dart';
 import 'package:http/http.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import '../../constant/country_code.dart';
-import '../../custom_ui/BoxDecorations.dart';
 import '../../helpers/common_functions.dart';
-import '../home.dart';
+import '../../helpers/shared_value_helper.dart';
 import '../main.dart';
-import '../profile.dart';
 
 class OtpVerification extends StatefulWidget {
   final mobileNumber;
-
   const OtpVerification({super.key, required this.mobileNumber});
-
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
-
   final FocusNode _pinPutFocusNode = FocusNode();
   TextEditingController otpController = TextEditingController();
   void verificationMethod(String otp) async {
     try{
       var response =await post(Uri.parse('https://new.annapurnamart.shop/api/login'),body:{
         'email': widget.mobileNumber.toString(),
-        'type':  'verifyotpcustomer',
+        'type': 'verifyotpcustomer',
         'password':otp
       });
       if(otp.isNotEmpty){
@@ -49,6 +37,9 @@ class _OtpVerificationState extends State<OtpVerification> {
         print(data);
         // Fluttertoast.showToast(msg: data['message']);
         Navigator.push(context, MaterialPageRoute(builder: (context)=>Main()));
+        access_token.update((p0) => data['access_token']);
+        print(access_token.toString()+' This is our token from the ');
+        access_token.save();
       }else{
         print('error find this account email or password');
       }
@@ -56,17 +47,14 @@ class _OtpVerificationState extends State<OtpVerification> {
       print('this is first time error find in this code ');
     }
   }
-
   bool showPassword = false;
   @override
-
   Widget build(BuildContext context) {
     Provider.of<AuthPresenter>(context, listen: false).setContext(context);
     return AuthScreen.buildScreen(
         context, buildBody(context, getWidth(context))
     );
   }
-
   Widget buildBody(BuildContext context, double screenWidth) {
     final defaultPinTheme = PinTheme(
       width: 45,
@@ -139,12 +127,12 @@ class _OtpVerificationState extends State<OtpVerification> {
               onSubmitted: (String pin) => _showSnackBar(pin, context),
               focusNode: _pinPutFocusNode,
               submittedPinTheme: PinTheme(
-                  height: 56,
-                  width: 56,
+                  height: 45,
+                  width: 45,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.0),
-                      border: Border.all(color: Color(0xffFE0091)),
-                      color: Color(0xffFe0091))),
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Color.fromRGBO(78, 181, 41,1)),
+                      color:Color.fromRGBO(78, 181, 41,1))),
               focusedPinTheme: defaultPinTheme,
               followingPinTheme: defaultPinTheme,
             ),

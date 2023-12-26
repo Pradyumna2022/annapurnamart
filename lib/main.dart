@@ -25,6 +25,7 @@ import 'package:grostore/presenters/stock_locations_presenter.dart';
 import 'package:grostore/presenters/user_presenter.dart';
 import 'package:grostore/presenters/wallet_presenter.dart';
 import 'package:grostore/presenters/wishlist_presenter.dart';
+import 'package:grostore/screens/auth/otp_verification.dart';
 import 'package:grostore/screens/auth/send_otp_with_phone.dart';
 import 'package:grostore/screens/home.dart';
 import 'package:grostore/screens/landing_pages/landing_page.dart';
@@ -52,12 +53,14 @@ void main() {
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
-//       home: LoginWithPhoneNumber(),
+//       home:
 //     );
 //   }
 // }
 
-    //The route configuration.
+   /// The route configuration.
+
+
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(

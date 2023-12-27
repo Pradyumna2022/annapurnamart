@@ -482,7 +482,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already Registered',
+                        'Login With Otp',
                         style:
                         TextStyle(color: ThemeConfig.fontColor, fontSize: 12),
                       ),

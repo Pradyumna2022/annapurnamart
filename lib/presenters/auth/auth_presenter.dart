@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:grostore/apis/auth_api.dart';
 import 'package:grostore/app_lang.dart';
 import 'package:grostore/constant/country_code.dart';
@@ -77,6 +78,8 @@ class AuthPresenter extends ChangeNotifier {
     }
   }
 
+
+
   String makeLoginPostBody() {
     return jsonEncode({
       "email": loginEmail,
@@ -113,11 +116,11 @@ class AuthPresenter extends ChangeNotifier {
     Loading.show(_context!);
     LoginResponse response = await AuthApi.login(makeLoginPostBody(), _context!);
     Loading.close();
-    print(response.result.toString() + 'jjjjjjjjjjjjjjjjjjjj');
     if (response.result) {
       print(" WE ARE RESPONSE BODY");
       access_token.update((p0) => response.accessToken);
       access_token.save();
+      print(response.accessToken+' this is my token');
       regPhoneNumberController.clear();
       loginPasswordController.clear();
       SystemData.isLogIn = true;

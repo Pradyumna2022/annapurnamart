@@ -826,13 +826,11 @@ class _CheckOutState extends State<CheckOut> {
             style: StyleConfig.fs16fwBold,
           ),
         ),
-        // width: getWidth(context),
-        SizedBox(
-          height: 10,
-        ),
+
         AspectRatio(
-          aspectRatio: 1,
+          aspectRatio: 3.5,
           child: ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
             itemCount: data.logistics.length,
             padding: EdgeInsets.symmetric(
                 horizontal: StyleConfig.padding, vertical: 10),

@@ -222,10 +222,14 @@ class AddressPresenter extends ChangeNotifier {
         isDefault: isDefault!,
         address: fullAddress!);
     Loading.close();
+
     if (!context.mounted) return;
     ToastUi.show(context, response.object.message);
+
     if (response.object.result) {
       Navigator.pop(context);
+      ToastUi.show(context, 'Save Your Address');
+
     }
   }
 

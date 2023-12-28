@@ -46,7 +46,8 @@ class _LoginState extends State<Login> {
         print(data);
 
         // Fluttertoast.showToast(msg: data['message']);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerification(mobileNumber: phone.toString(),)));
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerification(mobileNumber: phone.toString(),)));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>OtpVerification(mobileNumber: phone.toString())), (route) => false);
       }else{
 
         print('error find this account email or password');

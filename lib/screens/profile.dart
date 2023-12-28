@@ -56,9 +56,11 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20,),
-          Expanded(
-            flex: 1,
+
+          // SizedBox(height: 20,),
+          SizedBox(
+            height: 115,
+            // flex: 1,
             child: Container(
               height: 80,
               width: getWidth(context),
@@ -74,26 +76,27 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                   SizedBox(width: 14,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(SystemData.userInfo.name,style: StyleConfig.fs16cWhitefwBold,),
                       SizedBox(height: 10,),
                       Text(SystemData.userInfo.email,style: StyleConfig.fs12cWhitefwBold,),
+                      Button(
+                        onPressed: (){
+                          MakeRoute.go(context, ProfileEdit());
+                        },
+                        minWidth: 60,
+                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                        shape: StyleConfig.buttonRadius(8).copyWith(
+                            side: BorderSide(width: 1, color: ThemeConfig.white))
+                        // RoundedRectangleBorder(borderRadius: BorderRadius.c),
+                        ,
+                        child: Text(AppLang.local(context).edit_profile_ucf, style: StyleConfig.fs12cWhitefwBold,),
+                      ),
                     ],
                   ),
                   Spacer(),
-                  Button(
-                    onPressed: (){
-                      MakeRoute.go(context, ProfileEdit());
-                    },
-                    minWidth: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                    shape: StyleConfig.buttonRadius(8).copyWith(
-                        side: BorderSide(width: 1, color: ThemeConfig.white))
-                    // RoundedRectangleBorder(borderRadius: BorderRadius.c),
-                    ,
-                    child: Text(AppLang.local(context).edit_profile_ucf, style: StyleConfig.fs12cWhitefwBold,),
-                  )
+
                 ],
               ) :
               Row(
@@ -122,9 +125,10 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
               ),
             ),
           ),
-          //SizedBox(height: 20,),
+
+          SizedBox(height: 20,),
           Expanded(
-            flex: 5,
+            // flex: 5,
             child: Container(
               padding: EdgeInsets.only(left: StyleConfig.padding,
                   right: StyleConfig.padding,
@@ -136,12 +140,14 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+
                     optionModel(AppLang
                         .local(context)
                         .pick_a_location, getAssetIcon("address.png"), StockLocations()),
                     if(SystemData.isLogIn)
                       Column(
                         children: [
+
                           optionModel(AppLang
                               .local(context)
                               .voucher_n_offers_ucf, getAssetIcon("coupons.png"),

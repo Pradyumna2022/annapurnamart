@@ -128,12 +128,12 @@ class _MainState extends State<Main> {
                 return;
               }
             },
-            backgroundColor: ThemeConfig.amber,
+            backgroundColor: ThemeConfig.accentColor,
             child: badges.Badge(
               position: badges.BadgePosition.custom(end: 12, bottom: -15),
               badgeStyle: badges.BadgeStyle(
                   shape: badges.BadgeShape.circle,
-                  badgeColor: ThemeConfig.red,
+                  badgeColor: ThemeConfig.amber,
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(width: 1, color: ThemeConfig.white)
                   //padding: EdgeInsets.all(5),

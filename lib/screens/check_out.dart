@@ -19,6 +19,7 @@ import 'package:grostore/models/payment_types_response.dart';
 import 'package:grostore/models/time_slote_response.dart';
 import 'package:grostore/presenters/check_out_presenter.dart';
 import 'package:grostore/presenters/user_presenter.dart';
+import 'package:grostore/screens/address/addresses.dart';
 import 'package:grostore/screens/main.dart';
 import 'package:intl/intl.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
@@ -109,9 +110,20 @@ class _CheckOutState extends State<CheckOut> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 24,
-              ),
+              // ****************  NEW PAGE FROM THIS CODE
+              //
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              //   child: MaterialButton(
+              //     minWidth: double.infinity,
+              //     onPressed: (){
+              //       Navigator.push(context, MaterialPageRoute(builder: (context)=>Addresses()));
+              //     },color: Colors.green,child:Text("Add New Address",style: TextStyle(color: Colors.white
+              //   )),),
+              // ),
+              // SizedBox(
+              //   height: 24,
+              // ),
               buildShippingAddress(context, data),
               SizedBox(
                 height: 24,
@@ -120,6 +132,8 @@ class _CheckOutState extends State<CheckOut> {
               SizedBox(
                 height: 24,
               ),
+
+
               if (data.logistics.isNotEmpty)
                 buildLogistic(context, data)
               else

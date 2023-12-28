@@ -118,9 +118,9 @@ class _AddressNewOrUpdateState extends State<AddressNewOrUpdate> {
                                     .addressController.text
                                     .trim(),
                                 isDefault:
-                                    addressPresenter.defaultAddress == "No"
-                                        ? 0
-                                        : 1);
+                                addressPresenter.defaultAddress == "No"
+                                    ? 0
+                                    : 1);
                           } else {
                             addressPresenter.addAddress(context,
                                 countryInfo: addressPresenter.selectedCountry,
@@ -130,9 +130,9 @@ class _AddressNewOrUpdateState extends State<AddressNewOrUpdate> {
                                     .addressController.text
                                     .trim(),
                                 isDefault:
-                                    addressPresenter.defaultAddress == "No"
-                                        ? 0
-                                        : 1);
+                                addressPresenter.defaultAddress == "No"
+                                    ? 0
+                                    : 1);
                           }
                         },
                         shape: StyleConfig.buttonRadius(8),
@@ -143,6 +143,7 @@ class _AddressNewOrUpdateState extends State<AddressNewOrUpdate> {
                           AppLang.local(context).save,
                           style: StyleConfig.fs14cWhitefwBold,
                         ))
+
                   ],
                 );
               }),

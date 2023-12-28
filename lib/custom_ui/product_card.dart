@@ -71,7 +71,6 @@ class ProductCard extends StatelessWidget {
                           .addToCart(product.variations.first.id, 1, context);
                     }else{
                       MakeRoute.productRoute(this.context, ProductDetails(slug: product.slug));
-
                     }
                   }else{
                     MakeRoute.productRoute(this.context, Login());

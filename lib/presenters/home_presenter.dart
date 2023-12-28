@@ -1,5 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:grostore/apis/banners_api.dart';
 import 'package:grostore/apis/category_api.dart';
 import 'package:grostore/apis/product_api.dart';
@@ -11,8 +9,6 @@ import 'package:grostore/helpers/device_info_helper.dart';
 import 'package:grostore/models/common/category_info.dart';
 import 'package:grostore/models/home_banner_response.dart';
 import 'package:grostore/models/product_mini_response.dart';
-import 'package:grostore/models/category_response.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class HomePresenter extends ChangeNotifier {
@@ -116,6 +112,7 @@ class HomePresenter extends ChangeNotifier {
       ToastUi.show(context!, AppLang.local(context!).something_went_wrong);
     }
   }
+
 
   reset() {
     page=1;

@@ -10,6 +10,7 @@ import 'package:grostore/custom_ui/auth_ui.dart';
 import 'package:grostore/helpers/device_info_helper.dart';
 import 'package:grostore/models/common/user_info.dart';
 import 'package:grostore/presenters/auth/auth_presenter.dart';
+import 'package:grostore/screens/auth/login.dart';
 import 'package:http/http.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -129,7 +130,8 @@ class _OtpVerificationState extends State<OtpVerification> {
         );
         SystemData.userInfo = userInfo;
         // print(data['user'].toString()+' ---------------- this is after userInfo of system in token');
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>Main()));
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=>Main()));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Main()), (route) => false);
       }else{
         print('error find this account email or password');
       }
@@ -272,6 +274,15 @@ class _OtpVerificationState extends State<OtpVerification> {
               ),
             ):Center(child: Text("Resend OTP after $count second",style:TextStyle(
       color: ThemeConfig.fontColor, fontWeight: FontWeight.w600,))),
+            Align(
+              alignment: AlignmentDirectional.center,
+              child: MaterialButton(
+                color:  Color.fromRGBO(78, 181, 41,1),
+                onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+              }, child: Text("Edit Your Phone",style:TextStyle(
+                color: Colors.white, fontWeight: FontWeight.w600,)),),
+            )
 
           ],
         ),

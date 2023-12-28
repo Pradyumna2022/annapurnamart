@@ -29,11 +29,16 @@ class CartPresenter extends ChangeNotifier{
   }
    addToCart(variantId,qty,BuildContext context)async{
     var res = await CartApi.addToCart(variantId: variantId, qty: qty);
-    if(res.object.result) {
-      cartResponse = res.object;
-      isCartResponseFetch=true;
-      notifyListeners();
-    }
+       try{
+         if(res.object.result) {
+           cartResponse = res.object;
+           isCartResponseFetch=true;
+           notifyListeners();
+         }
+       }catch(e){
+         ToastUi.show(context, e);
+         print("ERROR FROM THE ADD TO CART CATCH ERROR $e");
+       }
       ToastUi.show(context, res.object.message);
   }
 

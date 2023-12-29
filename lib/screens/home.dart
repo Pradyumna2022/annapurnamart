@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:grostore/addtocartsolution/build_context_error_no_longer.dart';
 import 'package:grostore/app_lang.dart';
 import 'package:grostore/configs/style_config.dart';
 import 'package:grostore/configs/theme_config.dart';
@@ -46,6 +47,7 @@ class _HomeState extends State<Home> {
 
     return SafeArea(
       child: Scaffold(
+        key: ToastUiFake.scaffoldKey,  // THIS IS FAKE TOASTMASTER FROM EDITION
         backgroundColor: ThemeConfig.xxlightGrey,
         appBar: buildSearchOption(context),
         body: Consumer<HomePresenter>(builder: (context, data, child) {

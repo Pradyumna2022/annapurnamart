@@ -68,6 +68,8 @@ Loading.close();
     var password = passwordController.text.toString();
     var password_confirm = passwordConfirmController.text.toString();
 
+
+
     var change_password = password != "" ||
         password_confirm !=
             ""; // if both fields are empty we will not change user's password
@@ -91,9 +93,16 @@ Loading.close();
 
     var post_body = jsonEncode({"password": "$password","password_confirmation": "$password_confirm"});
 
-    var res =
-    await UserApi.updatePassword( post_body);
+    var res = await UserApi.updatePassword( post_body,);
+
+    print(res);
+print('____________________________________');
     ToastUi.show(context, res.object.message);
+    if (res.object.result==true) {
+      passwordController.clear();
+      passwordConfirmController.clear();
+    }
+
   }
 
   Future<void> refresh(){

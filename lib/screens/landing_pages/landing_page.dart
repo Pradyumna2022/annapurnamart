@@ -44,7 +44,7 @@ Provider.of<LandingPagePresenter>(context).iniState();
           body: Column(
             children: [
               SizedBox(
-                height: getHeight(context)*0.88,
+                height: getHeight(context)*0.892,
                 child: CarouselSlider(
                   carouselController:data.controller ,
                   items: data.pages,

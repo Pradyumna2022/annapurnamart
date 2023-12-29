@@ -364,7 +364,6 @@ class _FilterState extends State<Filter> {
     );
   }
 
-
   Widget  buildProductSection(FilterPresenter data){
     return GridView.builder(
         padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding,vertical: StyleConfig.smSectionSpacer),
@@ -388,7 +387,7 @@ class _FilterState extends State<Filter> {
 
           title: Center(child: Text("Filter Form",style: StyleConfig.fs14fwBold,)),
           content: Container(
-            height: getHeight(context)*0.28,
+            height: getHeight(context)*0.32,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -460,5 +459,6 @@ class _FilterState extends State<Filter> {
       }
     ));
   }
+
 
 }

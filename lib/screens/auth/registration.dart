@@ -156,19 +156,53 @@ class _RegistrationState extends State<Registration> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(left: 10),
-                        width: getWidth(context) - 200,
-                        child: TextField(
-                          style: StyleConfig.fs14fwNormal,
-                          decoration: InputDecoration.collapsed(
-                              hintText: "XXX XXX XXX"),
-                          controller: data.regPhoneNumberController,
+
+                      Expanded(
+                        // padding: EdgeInsets.only(left: 10),
+                        // width: getWidth(context) -170,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: TextField(
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(10)
+                            ],
+                            style: StyleConfig.fs14fwNormal,
+                            // decoration: InputDecoration.collapsed(
+                            //
+                            //     hintText: "XXX XXX XXX"),
+                            // controller: data.regPhoneNumberController,
+                            decoration: InputDecoration(
+                              // suffixIcon: MaterialButton(
+                              //   // padding: EdgeInsets.only(left: 20),
+                              //
+                              //   minWidth: 30,
+                              //   height: 20,
+                              //   color: Color.fromRGBO(78, 181, 41,1),
+                              //   onPressed: (){
+                              //     print('plasea veriyy');
+                              //     // verifyPhoneNumber();
+                              //   },
+                              //   child: Text("Verify",style: TextStyle(
+                              //     color: Colors.white,fontWeight: FontWeight.bold
+                              //   ),),
+                              // ),
+                              contentPadding: EdgeInsets.only(top: 3),
+                              enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                hintText: "XXX XXX XXX",
+
+                            ),
+
+                            controller: data.regPhoneNumberController,
+                          ),
                         ),
                       )
                     ],
                   )),
             ),
+
+
             Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
               child: Text(

@@ -129,6 +129,7 @@ class AuthPresenter extends ChangeNotifier {
       //UserInfo(name: response.name, email: response.email, phone: response.phone, balance: response.balance, avatar: response.avatar);
     }
     ToastUi.show(_context!, response.message);
+    Navigator.pop(_context!);
   }
 
   tokenCheck(BuildContext context) async {
@@ -167,6 +168,7 @@ class AuthPresenter extends ChangeNotifier {
   }
 
   onPressSignUp() async {
+
     var name = regNameController.text.toString();
     var email = regEmailController.text.toString();
     var password = regPasswordController.text.toString();
@@ -180,23 +182,29 @@ class AuthPresenter extends ChangeNotifier {
       ToastUi.show(_context!, AppLang.local(_context!).please_enter_name);
       return;
     } else if (registerBy == 'email' && (email == "" || !isEmail(email))) {
-      ToastUi.show(_context!, AppLang.local(_context!).please_enter_email);
+
+      ToastUi.show(_context!, "Please Enter Valid Email Without Spaces");
       return;
-    } else if (registerBy == 'phone' && regPhone == "") {
+    } else if (regPhone.isEmpty) {
+
       ToastUi.show(_context!, AppLang.local(_context!).please_enter_phone);
       return;
     } else if (password == "") {
+
       ToastUi.show(_context!, AppLang.local(_context!).please_enter_password);
       return;
     } else if (password_confirm == "") {
+
       ToastUi.show(
           _context!, AppLang.local(_context!).please_enter_confirm_password);
       return;
     } else if (password.length < 6) {
+
       ToastUi.show(
           _context!, AppLang.local(_context!).password_must_be_at_last_6_digit);
       return;
     } else if (password != password_confirm) {
+
       ToastUi.show(
           _context!,
           AppLang.local(_context!)

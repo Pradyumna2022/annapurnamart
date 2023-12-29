@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:grostore/addtocartsolution/build_context_error_no_longer.dart';
 import 'package:grostore/apis/cart_api.dart';
 import 'package:grostore/apis/order_api.dart';
 import 'package:grostore/custom_classes/system_data.dart';
@@ -27,22 +28,42 @@ class CartPresenter extends ChangeNotifier{
       notifyListeners();
     }
   }
-   addToCart(variantId,qty,BuildContext context)async{
-    var res = await CartApi.addToCart(variantId: variantId, qty: qty);
-       try{
-         if(res.object.result) {
-           cartResponse = res.object;
-           isCartResponseFetch=true;
-           notifyListeners();
-         }
-       }catch(e){
-         ToastUi.show(context, e);
-         print("ERROR FROM THE ADD TO CART CATCH ERROR $e");
-       }
-      ToastUi.show(context, res.object.message);
+  //  addToCart(variantId,qty,BuildContext context)async{
+  //   var res = await CartApi.addToCart(variantId: variantId, qty: qty);
+  //      try{
+  //        if(res.object.result) {
+  //          cartResponse = res.object;
+  //          isCartResponseFetch=true;
+  //          notifyListeners();
+  //        }
+  //      }catch(e){
+  //        ToastUi.show(context, e);
+  //        print("ERROR FROM THE ADD TO CART CATCH ERROR $e");
+  //      }
+  //     ToastUi.show(context, res.object.message);
+  // }
+
+  addToCart(variantId, qty, BuildContext context) async {
+    try {
+      var res = await CartApi.addToCart(variantId: variantId, qty: qty);
+
+      if (res.object.result) {
+        cartResponse = res.object;
+        isCartResponseFetch = true;
+        notifyListeners();
+      }
+
+      ToastUiFake.show(context, res.object.message);
+    } catch (e, stackTrace) {
+      print("ERROR FROM THE ADD TO CART: $e");
+      print("STACK TRACE: $stackTrace");
+
+      // Display a generic error message to the user.
+      ToastUiFake.show(context, "An error occurred while adding to cart.");
+    }
   }
 
-   applyCoupon(BuildContext context,code)async{
+  applyCoupon(BuildContext context,code)async{
     var res = await CartApi.couponApply(code:code );
     if(res.object.result) {
       SystemData.couponCode=code;

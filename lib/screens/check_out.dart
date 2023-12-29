@@ -121,9 +121,11 @@ class _CheckOutState extends State<CheckOut> {
               //     },color: Colors.green,child:Text("Add New Address",style: TextStyle(color: Colors.white
               //   )),),
               // ),
-              // SizedBox(
-              //   height: 24,
-              // ),
+              SizedBox(
+                height: 24,
+              ),
+
+
               buildShippingAddress(context, data),
               SizedBox(
                 height: 24,
@@ -580,7 +582,7 @@ class _CheckOutState extends State<CheckOut> {
               data.onChangeDeliveryType("regular");
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               decoration: BoxDecorations.shadow(radius: 8).copyWith(
                   border: data.shipping_delivery_type == "regular"
                       ? Border.all(color: ThemeConfig.accentColor, width: 2)

@@ -7,7 +7,7 @@ class AppConfig{
 
 
  // static const domain = "192.168.31.237/enmart-laravel"; //If you want to connect with local host provide your ip address instead localhost.
- static const domain = "new.annapurnamart.shop"; //If you want to connect with your server replace it with your domain name
+ static const domain = "annapurnamart.shop"; //If you want to connect with your server replace it with your domain name
 
 
   static const String apiEndPath = "api";

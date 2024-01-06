@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:grostore/addtocartsolution/build_context_error_no_longer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grostore/apis/cart_api.dart';
 import 'package:grostore/apis/order_api.dart';
 import 'package:grostore/custom_classes/system_data.dart';
@@ -51,15 +51,42 @@ class CartPresenter extends ChangeNotifier{
         cartResponse = res.object;
         isCartResponseFetch = true;
         notifyListeners();
+        // print('this is add to cart');
+        final snackBar = SnackBar(
+          duration: Duration(milliseconds: 100),
+          content: const Text('Product add to cart'),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: '',
+            onPressed: () {
+              // Some code to undo the change.
+            },
+          ),
+        );
+
+        // Find the ScaffoldMessenger in the widget tree
+        // and use it to show a SnackBar.
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
-      ToastUiFake.show(context, res.object.message);
+      // ToastUi.show(context, res.object.message);
+      print('Product add to cart');
+      // Fluttertoast.showToast(
+      //     msg: "Product add to cart",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.black,
+      //     textColor: Colors.white,
+      //     fontSize: 22.0,
+      // );
+
     } catch (e, stackTrace) {
       print("ERROR FROM THE ADD TO CART: $e");
       print("STACK TRACE: $stackTrace");
 
       // Display a generic error message to the user.
-      ToastUiFake.show(context, "An error occurred while adding to cart.");
+      ToastUi.show(context, "An error occurred while adding to cart.");
     }
   }
 
@@ -79,7 +106,18 @@ class CartPresenter extends ChangeNotifier{
     if(res.object.result) {
       cartResponse = res.object;
       isCartResponseFetch=true;
-      ToastUi.show(context, res.object.message);
+      // ToastUi.show(context, res.object.message);
+      Fluttertoast.showToast(
+          msg: "Update",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          // timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 22.0
+      );
+
+      print('Update');
       notifyListeners();
     }
   }

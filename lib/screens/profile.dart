@@ -27,7 +27,8 @@ import 'package:grostore/screens/wallet.dart';
 import 'package:grostore/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 import 'package:route_transitions/route_transitions.dart';
-import 'package:toast/toast.dart';
+
+import 'notification.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -167,10 +168,15 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                           optionModel(AppLang
                               .local(context)
                               .address, getAssetIcon("address.png"),const Addresses()),
-                          // optionModel(AppLang
-                          //     .local(context)
-                          //     .notification, getAssetIcon("notification.png"),
-                          //     Container()),
+
+
+                          optionModel(AppLang
+                              .local(context)
+                              .notification, getAssetIcon("notification.png"),
+                              ProfileNotification()
+                          ),
+
+
                           // optionModel(AppLang
                           //     .local(context)
                           //     .security, getAssetIcon("security.png"),

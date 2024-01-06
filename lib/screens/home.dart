@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:grostore/addtocartsolution/build_context_error_no_longer.dart';
 import 'package:grostore/app_lang.dart';
 import 'package:grostore/configs/style_config.dart';
 import 'package:grostore/configs/theme_config.dart';
@@ -16,6 +15,8 @@ import 'package:grostore/presenters/home_presenter.dart';
 import 'package:grostore/screens/filter.dart';
 import 'package:provider/provider.dart';
 
+import '../custom_ui/toast_ui.dart';
+
 class Home extends StatefulWidget {
   String? id;
 
@@ -26,8 +27,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final ToastUi _toastUi = ToastUi();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
+
     // TODO: implement initState
     Provider.of<HomePresenter>(context, listen: false).setContext(context);
     Provider.of<HomePresenter>(context, listen: false).initState(context);
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
 
     return SafeArea(
       child: Scaffold(
-        key: ToastUiFake.scaffoldKey,  // THIS IS FAKE TOASTMASTER FROM EDITION
+        key: _scaffoldKey, // THIS IS FAKE TOASTMASTER FROM EDITION
         backgroundColor: ThemeConfig.xxlightGrey,
         appBar: buildSearchOption(context),
         body: Consumer<HomePresenter>(builder: (context, data, child) {
@@ -60,7 +64,7 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildSliderSection(data),
-                    // Text("sdfhsdhfsd"),
+
                     SizedBox(
                       height: 14,
                     ),

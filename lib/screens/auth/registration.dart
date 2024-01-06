@@ -172,7 +172,7 @@ class _RegistrationState extends State<Registration> {
                             //
                             //     hintText: "XXX XXX XXX"),
                             // controller: data.regPhoneNumberController,
-                            decoration: InputDecoration(
+                            decoration: InputDecoration.collapsed(
                               // suffixIcon: MaterialButton(
                               //   // padding: EdgeInsets.only(left: 20),
                               //
@@ -187,13 +187,11 @@ class _RegistrationState extends State<Registration> {
                               //     color: Colors.white,fontWeight: FontWeight.bold
                               //   ),),
                               // ),
-                              contentPadding: EdgeInsets.only(top: 3),
-                              enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
+                              // contentPadding: EdgeInsets.only(top: 3),
+                              // enabledBorder: InputBorder.none,
+                              //   focusedBorder: InputBorder.none,
                                 hintText: "XXX XXX XXX",
-
                             ),
-
                             controller: data.regPhoneNumberController,
                           ),
                         ),

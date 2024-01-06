@@ -17,9 +17,10 @@ static simpleToast(context,message){
 
 static show(BuildContext mainContext,message){
   showDialog(context: mainContext, builder: (context){
-    Future.delayed(Duration(seconds: 2)).then((value) => Navigator.pop(mainContext));
+    Future.delayed(Duration(seconds: 1)).then((value) => Navigator.pop(mainContext));
     return  AlertDialog(
       content: Text(message,style: StyleConfig.fs14fwNormal,),);
   });
 }
 }
+

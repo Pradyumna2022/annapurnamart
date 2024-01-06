@@ -25,6 +25,7 @@ import 'package:intl/intl.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import '../apis/user_api.dart';
 import '../phone_pay_payment.dart';
 
 Object? result;
@@ -52,7 +53,6 @@ class _CheckOutState extends State<CheckOut> {
   arn: null, bankId: , brn: B12345}}}
 
    */
-
 
   // ******** value of the init of flutter sdk
   String environment = "UAT_SIM";
@@ -95,369 +95,373 @@ class _CheckOutState extends State<CheckOut> {
     super.initState();
     phonePayInit();
     body = getCheckSum().toString();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: ThemeConfig.xxlightGrey,
       appBar: CommonAppbar.show(
           title: AppLang.local(context).check_out_ucf, context: context),
-      body: SingleChildScrollView(
-        child: Consumer<CheckOutPresenter>(builder: (context, data, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ****************  NEW PAGE FROM THIS CODE
-              //
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              //   child: MaterialButton(
-              //     minWidth: double.infinity,
-              //     onPressed: (){
-              //       Navigator.push(context, MaterialPageRoute(builder: (context)=>Addresses()));
-              //     },color: Colors.green,child:Text("Add New Address",style: TextStyle(color: Colors.white
-              //   )),),
-              // ),
-              SizedBox(
-                height: 24,
-              ),
+      body: Consumer<CheckOutPresenter>(builder: (context, data, child) {
+        return RefreshIndicator(
+          onRefresh: () => data.onRefreshCheckOut(context),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ****************  NEW PAGE FROM THIS CODE
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: MaterialButton(
+                    minWidth: double.infinity,
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Addresses()));
+                    },
+                    color: Colors.green,
+                    child: Text("Add New Address",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                SizedBox(
+                  height: 24,
+                ),
 
+                buildShippingAddress(context, data),
+                SizedBox(
+                  height: 24,
+                ),
+                buildBillingAddress(context, data),
+                SizedBox(
+                  height: 24,
+                ),
 
-              buildShippingAddress(context, data),
-              SizedBox(
-                height: 24,
-              ),
-              buildBillingAddress(context, data),
-              SizedBox(
-                height: 24,
-              ),
-
-
-              if (data.logistics.isNotEmpty)
-                buildLogistic(context, data)
-              else
+                if (data.logistics.isNotEmpty)
+                  buildLogistic(context, data)
+                else
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecorations.shadow(radius: 8)
+                          .copyWith(color: ThemeConfig.red),
+                      child: Text(
+                        "We are not shipping to your city now. ",
+                        style: StyleConfig.fs14cWhitefwNormal,
+                      )),
+                SizedBox(
+                  height: 24,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  child: Text(
+                    "Preferred Delivery Time",
+                    style: StyleConfig.fs16fwBold,
+                  ),
+                ),
+                data.isFetchTimeSlot
+                    ? buildDeliveryTime(context, data)
+                    : timeSlotShimmer(),
+                SizedBox(
+                  height: 24,
+                ),
+                buildPersonalInfo(context, data),
+                SizedBox(
+                  height: 24,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  child: Text(
+                    "Payment Method",
+                    style: StyleConfig.fs16fwBold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecorations.shadow(radius: 8)
-                        .copyWith(color: ThemeConfig.red),
-                    child: Text(
-                      "We are not shipping to your city now. ",
-                      style: StyleConfig.fs14cWhitefwNormal,
-                    )),
-              SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                child: Text(
-                  "Preferred Delivery Time",
-                  style: StyleConfig.fs16fwBold,
-                ),
-              ),
-              data.isFetchTimeSlot
-                  ? buildDeliveryTime(context, data)
-                  : timeSlotShimmer(),
-              SizedBox(
-                height: 24,
-              ),
-              buildPersonalInfo(context, data),
-              SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                child: Text(
-                  "Payment Method",
-                  style: StyleConfig.fs16fwBold,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 100,
-                decoration: BoxDecorations.shadow(radius: 8),
-                margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding:
-                EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
-                child: Button(
-                  onPressed: () async {
-                    PaymentTypesResponse? type = await showPaymentMethods(data);
-                    if (type != null) {
-                      data.onChangePaymentMethod(type);
-                    }
-                  },
-                  alignment: Alignment.centerLeft,
-                  minWidth: getWidth(context),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                                width: getWidth(context) * 0.38,
-                                child: Text(
-                                  data.selectedPaymentMethod?.name ?? '',
-                                  style: StyleConfig.fs16fwBold,
-                                )
-                            ),
+                  height: 100,
+                  decoration: BoxDecorations.shadow(radius: 8),
+                  margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
+                  child: Button(
+                    onPressed: () async {
+                      PaymentTypesResponse? type =
+                          await showPaymentMethods(data);
+                      if (type != null) {
+                        data.onChangePaymentMethod(type);
+                      }
+                    },
+                    alignment: Alignment.centerLeft,
+                    minWidth: getWidth(context),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                  width: getWidth(context) * 0.38,
+                                  child: Text(
+                                    data.selectedPaymentMethod?.name ?? '',
+                                    style: StyleConfig.fs16fwBold,
+                                  )),
+                              Container(
+                                width: getWidth(context) * 0.3,
+                                padding: EdgeInsets.all(8),
+                                child: ImageView.svg(
+                                    url:
+                                        data.selectedPaymentMethod?.image ?? "",
+                                    height: 50,
+                                    width: 50),
+                              ),
+                              Spacer(),
+                              Image.asset(
+                                getAssetIcon("next.png"),
+                                width: 16,
+                                height: 16,
+                              ),
+                            ],
+                          ),
 
-                            Container(
-                              width: getWidth(context) * 0.3,
-                              padding: EdgeInsets.all(8),
-                              child: ImageView.svg(
-                                  url: data.selectedPaymentMethod?.image ?? "",
-                                  height: 50,
-                                  width: 50),
-                            ),
-                            Spacer(),
-                            Image.asset(
-                              getAssetIcon("next.png"),
-                              width: 16,
-                              height: 16,
-                            ),
-                          ],
-                        ),
-
-                        //  ***********   this is phone pe
-
-                      ],
+                          //  ***********   this is phone pe
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text("resul $result"),
-              // *************  for the phone pay integration *******************
-
-              Container(
-                height: 100,
-                decoration: BoxDecorations.shadow(radius: 8),
-                margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding:
-                    EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
-                child: Button(
-                    minWidth: getWidth(context),
-                    onPressed: () {
-                      // Navigator.pop(context,data.paymentTypes[index]);
-                      startPgTransaction();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                            width: getWidth(context) * 0.3,
-                            child: Text(
-                              "Phone pe",
-                              style: StyleConfig.fs14fwBold,
-                            )),
-                        SizedBox(
-                          width: 29,
-                        ),
-                        Container(
-                          width: getWidth(context) * 0.3,
-                          padding: EdgeInsets.all(8),
-                          child: Image.asset(
-                            'assets/phonepay.jpg',
-                            width: 100,
-                          ),
-                        ),
-                        Spacer(),
-                        Image.asset(
-                          getAssetIcon("next.png"),
-                          width: 16,
-                          height: 16,
-                        ),
-                      ],
-                    )),
-              ),
-
-              // PhonePayPayment(),
-
-              //******************* phone pay ending points **************
-              SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                child: Text(
-                  "Add Tips For Deliveryman",
-                  style: StyleConfig.fs16fwBold,
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding, vertical: 10),
-                decoration: BoxDecorations.shadow(radius: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Tips",
-                      style: StyleConfig.fs14fwBold,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: data.tipsTxt,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecorations.phone(hint_text: "Tips"),
-                    ),
-                  ],
+                // Text("resul $result"),
+                // *************  for the phone pay integration *******************
+
+                // Container(
+                //   height: 100,
+                //   decoration: BoxDecorations.shadow(radius: 8),
+                //   margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                //   padding:
+                //       EdgeInsets.symmetric(horizontal: StyleConfig.padding14),
+                //   child: Button(
+                //       minWidth: getWidth(context),
+                //       onPressed: () {
+                //         // Navigator.pop(context,data.paymentTypes[index]);
+                //         startPgTransaction();
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Container(
+                //               width: getWidth(context) * 0.3,
+                //               child: Text(
+                //                 "Phone pe",
+                //                 style: StyleConfig.fs14fwBold,
+                //               )),
+                //           SizedBox(
+                //             width: 29,
+                //           ),
+                //           Container(
+                //             width: getWidth(context) * 0.3,
+                //             padding: EdgeInsets.all(8),
+                //             child: Image.asset(
+                //               'assets/phonepay.jpg',
+                //               width: 100,
+                //             ),
+                //           ),
+                //           Spacer(),
+                //           Image.asset(
+                //             getAssetIcon("next.png"),
+                //             width: 16,
+                //             height: 16,
+                //           ),
+                //         ],
+                //       )),
+                // ),
+
+                // // PhonePayPayment(),
+
+                //******************* phone pay ending points **************
+                SizedBox(
+                  height: 24,
                 ),
-              ),
-              SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                child: Text(
-                  "Order Summary",
-                  style: StyleConfig.fs16fwBold,
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  child: Text(
+                    "Add Tips For Deliveryman",
+                    style: StyleConfig.fs16fwBold,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: getWidth(context),
-                decoration: BoxDecorations.shadow(radius: 8),
-                margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
-                padding: EdgeInsets.symmetric(
-                    horizontal: StyleConfig.padding14,
-                    vertical: StyleConfig.padding14),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${AppLang.local(context).subtotal} :",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                        Text(
-                          showPrice(data.orderSummeryResponse.subTotal),
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${AppLang.local(context).delivery_fee_ucf} :",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                        Text(
-                          showPrice(data.orderSummeryResponse.shippingCharge),
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${AppLang.local(context).tax} :",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                        Text(
-                          showPrice(data.orderSummeryResponse.tax),
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-
-                    //*********  this is our order summary ********
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${AppLang.local(context).coupon_discount_ucf} :",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                        Text(
-                          showPrice(data.orderSummeryResponse.couponDiscount),
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                      ],
-                    ),
-
-
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: DottedLine(
-                        direction: Axis.horizontal,
-                        lineLength: double.infinity,
-                        lineThickness: 1.0,
-                        dashLength: 4.0,
-                        dashColor: ThemeConfig.grey,
-                        //dashGradient: [Colors.red, Colors.blue],
-                        dashRadius: 0.0,
-                        dashGapLength: 4.0,
-                        dashGapColor: Colors.transparent,
-                        //dashGapGradient: [Colors.red, Colors.blue],
-                        dashGapRadius: 0.0,
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: StyleConfig.padding, vertical: 10),
+                  decoration: BoxDecorations.shadow(radius: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Tips",
+                        style: StyleConfig.fs14fwBold,
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${AppLang.local(context).total} :",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                        Text(
-                          "${showPrice(data.orderSummeryResponse.total)}",
-                          style: StyleConfig.fs14fwNormal,
-                        ),
-                      ],
-                    ),
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: data.tipsTxt,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecorations.phone(hint_text: "Tips"),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 24,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  child: Text(
+                    "Order Summary",
+                    style: StyleConfig.fs16fwBold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: getWidth(context),
+                  decoration: BoxDecorations.shadow(radius: 8),
+                  margin: EdgeInsets.symmetric(horizontal: StyleConfig.padding),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: StyleConfig.padding14,
+                      vertical: StyleConfig.padding14),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLang.local(context).subtotal} :",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                          Text(
+                            showPrice(data.orderSummeryResponse.subTotal),
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLang.local(context).delivery_fee_ucf} :",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                          Text(
+                            showPrice(data.orderSummeryResponse.shippingCharge),
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLang.local(context).tax} :",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                          Text(
+                            showPrice(data.orderSummeryResponse.tax),
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
 
-              SizedBox(
-                height: 24,
-              ),
-              Button(
-                minWidth: getWidth(context),
-                color: ThemeConfig.accentColor,
-                onPressed: () {
-                  data.placeOrder(context);
-                },
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  "Place Order",
-                  style: StyleConfig.fs16cWhitefwBold,
+                      //*********  this is our order summary ********
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLang.local(context).coupon_discount_ucf} :",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                          Text(
+                            showPrice(data.orderSummeryResponse.couponDiscount),
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: DottedLine(
+                          direction: Axis.horizontal,
+                          lineLength: double.infinity,
+                          lineThickness: 1.0,
+                          dashLength: 4.0,
+                          dashColor: ThemeConfig.grey,
+                          //dashGradient: [Colors.red, Colors.blue],
+                          dashRadius: 0.0,
+                          dashGapLength: 4.0,
+                          dashGapColor: Colors.transparent,
+                          //dashGapGradient: [Colors.red, Colors.blue],
+                          dashGapRadius: 0.0,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLang.local(context).total} :",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                          Text(
+                            "${showPrice(data.orderSummeryResponse.total)}",
+                            style: StyleConfig.fs14fwNormal,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
-          );
-        }),
-      ),
+
+                SizedBox(
+                  height: 24,
+                ),
+                Button(
+                  minWidth: getWidth(context),
+                  color: ThemeConfig.accentColor,
+                  onPressed: () {
+                    data.placeOrder(context);
+                  },
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Text(
+                    "Place Order",
+                    style: StyleConfig.fs16cWhitefwBold,
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -681,6 +685,8 @@ class _CheckOutState extends State<CheckOut> {
   }
 
   Column buildShippingAddress(BuildContext context, CheckOutPresenter data) {
+    print(data.selectedShippingAddress.countryName.toString() +
+        '------------------------------------');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -691,12 +697,74 @@ class _CheckOutState extends State<CheckOut> {
             style: StyleConfig.fs16fwBold,
           ),
         ),
-        SizedBox(
-          //color: Colors.red,
-          height: 150,
-          width: getWidth(context),
-          child: data.isFetchDeliveryAddress
-              ? ListView.separated(
+        // SizedBox(
+        //   // color: Colors.red,
+        //   height: 150,
+        //   width: getWidth(context),
+        //   child:
+        //   data.isFetchDeliveryAddress
+        //     ? ListView.separated(
+        //           itemCount: data.addresses.length,
+        //           padding: EdgeInsets.symmetric(
+        //           horizontal: StyleConfig.padding, vertical: 10),
+        //           scrollDirection: Axis.horizontal,
+        //           itemBuilder: (context, index) {
+        //             return Container(
+        //               decoration: BoxDecorations.shadow(radius: 8).copyWith(
+        //                   border: Border.all(
+        //                       width: 2,
+        //                       color: data.selectedShippingAddress.id ==
+        //                               data.addresses[index].id
+        //                           ? ThemeConfig.accentColor
+        //                           : ThemeConfig.grey)),
+        //               child: Button(
+        //                 padding:
+        //                     EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        //                 shape: StyleConfig.buttonRadius(8),
+        //                 minWidth: getWidth(context) * 0.5,
+        //                 child: Column(
+        //                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //                   crossAxisAlignment: CrossAxisAlignment.start,
+        //                   children: [
+        //                     Text(
+        //                       data.addresses[index].countryName,
+        //                       style: StyleConfig.fs14fwNormal,
+        //                     ),
+        //                     Text(
+        //                       data.addresses[index].stateName,
+        //                       style: StyleConfig.fs14fwNormal,
+        //                     ),
+        //                     Text(
+        //                       data.addresses[index].cityName,
+        //                       style: StyleConfig.fs14fwNormal,
+        //                     ),
+        //                     Text(
+        //                       data.addresses[index].address,
+        //                       style: StyleConfig.fs14fwNormal,
+        //                       maxLines: 1,
+        //                     ),
+        //                   ],
+        //                 ),
+        //                 onPressed: () {
+        //                   data.onChangeShippingAddress(data.addresses[index]);
+        //                 },
+        //               ),
+        //             );
+        //           },
+        //           separatorBuilder: (context, index) {
+        //             return SizedBox(
+        //               width: 10,
+        //             );
+        //           },
+        //         )
+        //       // : Shimmers.horizontalList(10, getWidth(context) * 0.5, 100),
+        //
+        // )
+        data.selectedShippingAddress.countryName.isNotEmpty
+            ? SizedBox(
+                height: 150,
+                width: getWidth(context),
+                child: ListView.separated(
                   itemCount: data.addresses.length,
                   padding: EdgeInsets.symmetric(
                       horizontal: StyleConfig.padding, vertical: 10),
@@ -749,9 +817,25 @@ class _CheckOutState extends State<CheckOut> {
                       width: 10,
                     );
                   },
-                )
-              : Shimmers.horizontalList(10, getWidth(context) * 0.5, 100),
-        )
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                height: 160,
+                color: Colors.white,
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    "Please Add New Address",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
       ],
     );
   }
@@ -842,7 +926,6 @@ class _CheckOutState extends State<CheckOut> {
             style: StyleConfig.fs16fwBold,
           ),
         ),
-
         AspectRatio(
           aspectRatio: 3.5,
           child: ListView.separated(
@@ -1007,26 +1090,21 @@ class _CheckOutState extends State<CheckOut> {
     try {
       var response = PhonePePaymentSdk.startPGTransaction(
           body, callBackUrl, checksum, {}, apiEndPoint, ' ');
-      response
-          .then((val) async {
-        print(val.toString() +"llllllllllllllllllllllllllllllllllllllllll");
+      response.then((val) async {
+        print(val.toString() + "llllllllllllllllllllllllllllllllllllllllll");
         if (val != null) {
           String status = val['status'].toString();
           String error = val['error'].toString();
           if (status == 'SUCCESS') {
-
             await checkStatus();
             result = 'Flow Complete Status : SUCCESS!';
           } else {
-            result =
-            'Flow Complete Status : $status and error is $error !';
+            result = 'Flow Complete Status : $status and error is $error !';
           }
         } else {
           result = 'Flow Incomplete sorry !';
         }
-
-      })
-          .catchError((error) {
+      }).catchError((error) {
         handleError(error);
         return <dynamic>{};
       });
@@ -1041,36 +1119,43 @@ class _CheckOutState extends State<CheckOut> {
     });
   }
 
-  checkStatus() async{
-    try{
-      String url ='https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/$merchantId/$transactionId';
+  checkStatus() async {
+    try {
+      String url =
+          'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/$merchantId/$transactionId';
       String concatString = '/pg/v1/status/$merchantId/$transactionId$saltKey';
       var bytes = utf8.encode(concatString);
       var digest = sha256.convert(bytes).toString();
       var xVerify = "$digest###$saltIndex";
 
-      Map<String , String> header = {
+      Map<String, String> header = {
         'Content-Type': 'application/json',
         'X-VERIFY': xVerify,
         'X-MERCHANT-ID': merchantId
       };
-      await http.get(Uri.parse(url),headers: header).then((value) {
-        Map<String,dynamic> res = jsonDecode(value.body);
+      await http.get(Uri.parse(url), headers: header).then((value) {
+        Map<String, dynamic> res = jsonDecode(value.body);
         print('shuendnnnnnnnnnnn  $res');
-        try{
-          if(res['code'] == 'PAYMENT_SUCCESS' && res['data']['responseCode'] == 'SUCCESS'){
-            Fluttertoast.showToast(msg: res['message'],backgroundColor: Colors.green,);
-
-          }else{
-            Fluttertoast.showToast(msg: 'something went wrong !',backgroundColor: Colors.red);
+        try {
+          if (res['code'] == 'PAYMENT_SUCCESS' &&
+              res['data']['responseCode'] == 'SUCCESS') {
+            Fluttertoast.showToast(
+              msg: res['message'],
+              backgroundColor: Colors.green,
+            );
+          } else {
+            Fluttertoast.showToast(
+                msg: 'something went wrong !', backgroundColor: Colors.red);
           }
-        }
-        catch(e){
-          Fluttertoast.showToast(msg: 'function error of the catch and try log',backgroundColor: Colors.red);
+        } catch (e) {
+          Fluttertoast.showToast(
+              msg: 'function error of the catch and try log',
+              backgroundColor: Colors.red);
         }
       });
-    }catch(e){
-      Fluttertoast.showToast(msg: 'this is first and main error',backgroundColor: Colors.red);
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: 'this is first and main error', backgroundColor: Colors.red);
     }
   }
 }

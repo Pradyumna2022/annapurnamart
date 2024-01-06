@@ -56,12 +56,13 @@ class CheckOutPresenter extends ChangeNotifier {
       shippingCharge: "",
       isFreeShipping: false,
       couponDiscount: "",
-      total: "");
-
+      total: ""
+  );
   var firstDate;
   var lastDate;
   DateTime? selectedDate;
   String shipping_delivery_type = "regular";
+
 
   fetchAddresses(BuildContext context) async {
     var res = await UserApi.getAddresses();
@@ -74,6 +75,15 @@ class CheckOutPresenter extends ChangeNotifier {
     isFetchDeliveryAddress = true;
     notifyListeners();
   }
+
+
+  Future<void> onRefreshCheckOut(BuildContext context) async {
+    // Use a lambda function to match the expected signature
+    await () async {
+      await fetchAddresses(context);
+    }();
+  }
+
 
   fetchOrderSummery(id) async {
     var res = await OrderApi.getSummery(logistic_zone_id: id);
@@ -190,10 +200,14 @@ class CheckOutPresenter extends ChangeNotifier {
      shipping_delivery_type = "regular";
   }
 
+
+
   init(context){
     fetchAddresses(context);
     fetchTimeSlots();
     fetchPaymentTypes();
+
+
   }
 
 
